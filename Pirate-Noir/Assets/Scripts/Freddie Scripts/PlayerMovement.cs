@@ -33,6 +33,13 @@ public class PlayerMovement : MonoBehaviour
     public float GroundCheckOffset = 0.1f; // Height offset for ground check
     #endregion
 
+    #region === Interaction Settings ===
+    // Groups interaction-related variables in the Inspector
+    [Header("Interaction Settings")]
+    public float InteractRange = 3f;
+    public LayerMask InteractableLayer; // Assign this in Inspector!
+    #endregion
+
     #region === Animation ===
 
     [Header("Animation")] // Inspector header for animation settings
@@ -121,6 +128,25 @@ public class PlayerMovement : MonoBehaviour
     }
 
     #endregion
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        Debug.Log("Interact button pressed, checking for interactables...");
+        
+        Ray Ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward); // Create a ray from the camera's position forward
+        Debug.DrawRay(Ray.origin, Ray.direction * InteractRange, Color.red, 2f); // Draw the ray in the scene view for debugging purposes
+
+        // Added QueryTriggerInteraction.Collide to include Triggers in the raycast
+        if (Physics.Raycast(Ray, out RaycastHit hit, InteractRange, InteractableLayer, QueryTriggerInteraction.Collide))
+        {
+            if (hit.collider.TryGetComponent(out IInteractable Interactable))
+            {
+                Interactable.Interact(); // Call the Interact method on the interactable object
+                Debug.Log($"Interacted with {hit.collider.name}"); // Log the name of the interacted object for debugging
+            }
+        }
+
+    }
 
     #region === Animation Logic ===
 
