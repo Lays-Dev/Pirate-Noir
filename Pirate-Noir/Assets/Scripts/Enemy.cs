@@ -38,6 +38,8 @@ public class Enemy : MonoBehaviour
     {
         Sword.SetActive(false); // sword disappears when in cooldown, this will probably change in later versions
         yield return new WaitForSeconds(attackCooldown);
+
+        Sword.SetActive(true); // will make a function later to make the player be detected after entering a certain range, making the sword spawn in.
     }
     
     public void AttackPlayer()
@@ -48,6 +50,8 @@ public class Enemy : MonoBehaviour
         // Play attack animation or sound here if needed
         player.CurrentHealth -= damage;
     }
+
+    
 
     
 }
