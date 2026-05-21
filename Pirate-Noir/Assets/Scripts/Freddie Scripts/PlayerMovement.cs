@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
     public void Movement()
     {
         float CurrentSpeed = IsSprinting ? SprintSpeed : MoveSpeed; // Choose movement speed
-        MoveDirection = Orientation.forward * MoveInput.y + Orientation.right * MoveInput.x; // Calculate movement direction based on orientation and input
+        MoveDirection = transform.forward * MoveInput.y + transform.right * MoveInput.x; // Calculate movement direction based on orientation and input
         Vector3 HorizontalVelocity = MoveDirection * CurrentSpeed; // Calculate horizontal movement velocity
         RB.linearVelocity = new Vector3(HorizontalVelocity.x, VerticalY, HorizontalVelocity.z); // Apply horizontal velocity while preserving vertical velocity
         

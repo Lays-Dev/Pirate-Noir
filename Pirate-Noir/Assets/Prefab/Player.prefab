@@ -639,7 +639,7 @@ MonoBehaviour:
   MoveInput: {x: 0, y: 0}
   VerticalY: 0
   JumpForce: 3
-  Gravity: -10
+  Gravity: -25
   GroundLayer:
     serializedVersion: 2
     m_Bits: 201
