@@ -3,26 +3,33 @@ using UnityEngine.InputSystem; // Unity Input System namespace
 
 public class PlayerMovement : MonoBehaviour
 {
+    private PlayerStats Stats; // Reference to the PlayerStats component for accessing movement speeds and stamina
+
     #region === Movement Settings ===
 
     [Header("Movement Settings")] // Inspector header for movement settings
     public Rigidbody RB; // Rigidbody reference for physics-based movement
     public bool IsGrounded; // Whether the player is currently grounded
     public bool IsSprinting; // Whether the player is currently sprinting
-    
-    public float MoveSpeed = 7f; // Normal walking speed
-    public float SprintSpeed = 12f; // Sprinting movement speed
-    public Transform Orientation; // Reference to the player's orientation for movement direction
+    public bool CanSprint; // Whether the player can sprint based on input and stamina
+    private bool SprintDrain; // Whether the player is currently draining stamina from sprinting
+    public float CurrentSpeed; // Current movement speed based on sprinting state
+
 
     public Vector2 MoveInput; // Raw movement input from player
     public float VerticalY; // Vertical velocity value
     Vector3 MoveDirection; // Calculated movement direction
+
+        [Header("Stamina Settings")]
+    public float StaminaDrainRate = 20f; // Stamina lost per second while running
+    public float StaminaRegenRate = 15f; // Stamina gained per second while resting
 
     #endregion
 
     #region === Jump Settings ===
     [Header("Jump Settings")] // Inspector header for jumping settings
     public float JumpForce = 3f; // Strength of jump force
+    public float BaseGravity = 1f; // Base gravity value to keep player grounded when not jumping
     public float Gravity = -25f; // Custom gravity applied manually
     #endregion
 
@@ -49,6 +56,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        Stats = GetComponent<PlayerStats>(); // Get the PlayerStats component
+
         RB = GetComponent<Rigidbody>(); // Get the Rigidbody component
 
         RB.freezeRotation = true; // Prevent the Rigidbody from rotating due to physics
@@ -88,11 +97,36 @@ public class PlayerMovement : MonoBehaviour
 
     public void Movement()
     {
-        float CurrentSpeed = IsSprinting ? SprintSpeed : MoveSpeed; // Choose movement speed
-        MoveDirection = Orientation.forward * MoveInput.y + Orientation.right * MoveInput.x; // Calculate movement direction based on orientation and input
-        Vector3 HorizontalVelocity = MoveDirection * CurrentSpeed; // Calculate horizontal movement velocity
-        RB.linearVelocity = new Vector3(HorizontalVelocity.x, VerticalY, HorizontalVelocity.z); // Apply horizontal velocity while preserving vertical velocity
+        CanSprint = IsSprinting && MoveInput.magnitude > 0 && Stats.CurrentStamina > StaminaDrainRate; // Player can sprint if sprinting, has movement input, and enough stamina to drain
+        CurrentSpeed = CanSprint ? Stats.SprintSpeed : Stats.MoveSpeed; // Use modified speeds from stats
         
+        MoveDirection = transform.forward * MoveInput.y + transform.right * MoveInput.x; // Calculate movement direction based on input and player orientation
+        Vector3 HorizontalVelocity = MoveDirection * CurrentSpeed; // Calculate horizontal velocity based on movement direction and current speed
+        RB.linearVelocity = new Vector3(HorizontalVelocity.x, VerticalY, HorizontalVelocity.z); // Set Rigidbody velocity, preserving vertical velocity for jumping and gravity
+    }
+
+    private void HandleStamina()
+    {
+        
+        SprintDrain = IsSprinting && MoveInput.magnitude > 0 && Stats.CurrentStamina > 0f; // Evaluate if the player is actively burning stamina right now
+
+        if (SprintDrain)
+        {
+            // Drain stamina directly from stats
+            Stats.CurrentStamina -= StaminaDrainRate * Time.fixedDeltaTime;
+            
+            if (Stats.CurrentStamina < 0f) Stats.CurrentStamina = 0f;
+        }
+        else
+        {
+            // Regenerate stamina up to the MaxStamina value stored in stats
+            if (Stats.CurrentStamina < Stats.MaxStamina)
+            {
+                Stats.CurrentStamina += StaminaRegenRate * Time.fixedDeltaTime;
+                
+                if (Stats.CurrentStamina > Stats.MaxStamina) Stats.CurrentStamina = Stats.MaxStamina;
+            }
+        }
     }
 
     #region === Ground Detection ===
@@ -119,7 +153,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (IsGrounded && VerticalY < 0) // Player grounded while falling
         {
-            VerticalY = -1f; // Keep slight downward force to remain grounded
+            VerticalY = -BaseGravity; // Keep slight downward force to remain grounded
         }
         else // Player airborne
         {
@@ -177,6 +211,7 @@ public class PlayerMovement : MonoBehaviour
         CheckGround(); // Check if the player is grounded
         ApplyGravity(); // Apply custom gravity to the player
         UpdateAnimations(); // Update animator parameters based on current state
+        HandleStamina(); // Manage stamina drain and regeneration
     }
 
     private void OnDrawGizmosSelected()
