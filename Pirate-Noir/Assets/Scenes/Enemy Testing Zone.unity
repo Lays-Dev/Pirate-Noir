@@ -1146,6 +1146,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1183727329
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1183727330}
+  m_Layer: 0
+  m_Name: Detection Range
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1183727330
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183727329}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.45, z: 0}
+  m_LocalScale: {x: 4.6533914, y: 4.6533914, z: 4.6533914}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1202674365}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1187264034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1368,12 +1399,13 @@ Transform:
   m_GameObject: {fileID: 1202674361}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.99740815, z: -0, w: 0.0719511}
-  m_LocalPosition: {x: 8.36351, y: 0.87, z: -5.220607}
+  m_LocalPosition: {x: 7.44, y: 0.87, z: 1.12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1930605385}
   - {fileID: 1905908203}
+  - {fileID: 1183727330}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 171.748, z: 0}
 --- !u!114 &1202674366
@@ -1390,13 +1422,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   health: 0
   damage: 5
-  speed: 5
+  speed: 2
   agent: {fileID: 1202674367}
   Player: {fileID: 1736666323}
   player: {fileID: 1736666318}
   Attack: {fileID: 1930605385}
   Sword: {fileID: 1930605384}
   attackCooldown: 2
+  DetectRange: 8
+  distance: 0
 --- !u!195 &1202674367
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1407,11 +1441,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3.5
+  m_Speed: 3.75
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 2.2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -1619,7 +1653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3612770871091723636, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3612770871091723636, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1678,6 +1712,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aee07df39ddefa49a60e38ec6c4fd01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  BaseMoveSpeed: 7
+  BaseSprintSpeed: 12
+  SpeedMultiplier: 1
   Lives: 3
   CurrentHealth: 100
   MaxHealth: 100
@@ -1929,9 +1966,9 @@ GameObject:
   - component: {fileID: 1912548308}
   - component: {fileID: 1912548307}
   - component: {fileID: 1912548306}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

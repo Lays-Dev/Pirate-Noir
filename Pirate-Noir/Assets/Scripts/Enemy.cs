@@ -21,6 +21,9 @@ public class Enemy : MonoBehaviour
     public Transform Attack; // enemies themselves won't hurt you but they will have attacks that do
     public GameObject Sword; // Model that will get disabled after attack and enabled when attacking.
     public float attackCooldown = 2f;
+
+    public float DetectRange = 8f; // the range from which the enemy will detect and attack the player.
+    public float distance;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -31,7 +34,14 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        agent.SetDestination(Player.position); // Chase the player
+        distance = Vector3.Distance(this.transform.position, Player.position); // distance which will be used to measure and trigger enemy attacks
+
+        if(distance <= DetectRange)
+        {
+            agent.SetDestination(Player.position);
+        }
+        
+        
     }
 
     public IEnumerator AttackCooldown()
@@ -41,11 +51,18 @@ public class Enemy : MonoBehaviour
 
         Sword.SetActive(true); // will make a function later to make the player be detected after entering a certain range, making the sword spawn in.
     }
+
+    public void ChasePlayer()
+    {
+        // once player is detected, follow him, duh
+        agent.SetDestination(Player.position);
+    }
     
     public void AttackPlayer()
     {
-        
+
         Sword.SetActive(true);
+        
         StartCoroutine(AttackCooldown());
         // Play attack animation or sound here if needed
         player.CurrentHealth -= damage;
