@@ -590,7 +590,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3612770871091723636}
-  - component: {fileID: 5296888083960991240}
   - component: {fileID: 6685528757163221336}
   - component: {fileID: 1821935296183417215}
   - component: {fileID: 6215199485398367537}
@@ -619,31 +618,6 @@ Transform:
   - {fileID: 553111011254384468}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5296888083960991240
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2393370093522370787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9aee07df39ddefa49a60e38ec6c4fd01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  BaseMoveSpeed: 7
-  BaseSprintSpeed: 12
-  SpeedMultiplier: 1
-  Lives: 3
-  CurrentHealth: 100
-  MaxHealth: 100
-  CurrentStamina: 100
-  MaxStamina: 100
-  GrapplingHooks: 0
-  Bombs: 0
-  Keys: 0
-  Coins: 0
-  Score: 0
 --- !u!114 &6685528757163221336
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,6 +633,8 @@ MonoBehaviour:
   RB: {fileID: 6215199485398367537}
   IsGrounded: 0
   IsSprinting: 0
+  CanSprint: 0
+  CurrentSpeed: 0
   MoveInput: {x: 0, y: 0}
   VerticalY: 0
   StaminaDrainRate: 20
