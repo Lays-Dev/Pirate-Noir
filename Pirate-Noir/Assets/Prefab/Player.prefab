@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6113992442589228656}
   - component: {fileID: 8802436910007565474}
   - component: {fileID: 7247396654838897047}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -594,6 +594,7 @@ GameObject:
   - component: {fileID: 1821935296183417215}
   - component: {fileID: 6215199485398367537}
   - component: {fileID: 4632178226081566010}
+  - component: {fileID: 8248573917534614151}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -880,6 +881,31 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &8248573917534614151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2393370093522370787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aee07df39ddefa49a60e38ec6c4fd01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
+  BaseMoveSpeed: 7
+  BaseSprintSpeed: 12
+  SpeedMultiplier: 1
+  Lives: 3
+  CurrentHealth: 100
+  MaxHealth: 100
+  CurrentStamina: 100
+  MaxStamina: 100
+  GrapplingHooks: 0
+  Bombs: 0
+  Keys: 0
+  Coins: 0
+  Score: 0
 --- !u!1 &2743417721344866559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1355,7 +1381,7 @@ GameObject:
   - component: {fileID: 8588657045588876227}
   - component: {fileID: 6313305422571932236}
   - component: {fileID: 7020058676758739137}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CinemachineCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
