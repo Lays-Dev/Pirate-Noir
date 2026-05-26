@@ -1350,7 +1350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   health: 100
-  damage: 10
+  damage: 100
   speed: 4
   agent: {fileID: 1202674367}
   Player: {fileID: 1736666323}
@@ -1494,6 +1494,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1415317161}
+  - component: {fileID: 1415317162}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -1516,6 +1517,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1415317162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415317160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab3eacdccad74c34b865f9bbfaa1295e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  GameOverScreen: {fileID: 1602416979}
+  player: {fileID: 1736666318}
+  restartDelay: 3
 --- !u!1 &1428514805
 GameObject:
   m_ObjectHideFlags: 0
