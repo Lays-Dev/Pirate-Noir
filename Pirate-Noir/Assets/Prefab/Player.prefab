@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6113992442589228656}
   - component: {fileID: 8802436910007565474}
   - component: {fileID: 7247396654838897047}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -631,8 +631,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aee07df39ddefa49a60e38ec6c4fd01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  BaseMoveSpeed: 7
-  BaseSprintSpeed: 12
+  BaseMoveSpeed: 6
+  BaseSprintSpeed: 9
   SpeedMultiplier: 1
   Lives: 3
   CurrentHealth: 100
@@ -659,11 +659,13 @@ MonoBehaviour:
   RB: {fileID: 6215199485398367537}
   IsGrounded: 0
   IsSprinting: 0
+  CanSprint: 0
+  CurrentSpeed: 0
   MoveInput: {x: 0, y: 0}
   VerticalY: 0
   StaminaDrainRate: 20
   StaminaRegenRate: 15
-  JumpForce: 3
+  JumpForce: 2
   BaseGravity: 0.001
   Gravity: -25
   GroundLayer:
@@ -1379,7 +1381,7 @@ GameObject:
   - component: {fileID: 8588657045588876227}
   - component: {fileID: 6313305422571932236}
   - component: {fileID: 7020058676758739137}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CinemachineCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}

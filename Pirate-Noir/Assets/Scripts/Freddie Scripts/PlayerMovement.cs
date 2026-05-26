@@ -193,7 +193,7 @@ public class PlayerMovement : MonoBehaviour
 
         float CurrentAnimSpeed = MoveInput.magnitude; // Base movement animation speed
 
-        if (IsSprinting && CurrentAnimSpeed > 0) // Check if sprinting while moving
+        if (IsSprinting && CanSprint && CurrentAnimSpeed > 0) // Check if sprinting while moving
             CurrentAnimSpeed = 2f; // Increase animation speed for sprinting
 
         Anim.SetFloat("Speed", CurrentAnimSpeed, 0.1f, Time.deltaTime); // Smoothly update movement speed parameter
