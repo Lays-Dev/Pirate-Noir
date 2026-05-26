@@ -1,7 +1,0 @@
-Lays - 5/23/26
-
-The interaction system folder will be used for the player to interact with game objects.
-The Core folder
-> The Interactor script is assigned to the player, or the one doing the interactions
-The interactions folder will keep each type of interaction that can be done
-> Door Interaction
