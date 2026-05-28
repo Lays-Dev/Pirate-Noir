@@ -39,11 +39,12 @@ public class Enemy : MonoBehaviour
     {
         distance = Vector3.Distance(this.transform.position, Player.position); // distance which will be used to measure and trigger enemy attacks
 
-        agent.SetDestination(Player.position);
+        //agent.SetDestination(Player.position);
         
         if(distance <= DetectRange)
         {
             agent.speed = speed; // when the player is in range, the enemy will get faster to chase him down
+            ChasePlayer();
         }
         
         
@@ -58,12 +59,12 @@ public class Enemy : MonoBehaviour
         Sword.SetActive(true); // will make a function later to make the player be detected after entering a certain range, making the sword spawn in.
     }
 
-    /*public void ChasePlayer()
+    public void ChasePlayer()
     {
         // once player is detected, follow him, duh
         agent.SetDestination(Player.position);
     }
-    */
+    
     
     public void AttackPlayer()
     {
