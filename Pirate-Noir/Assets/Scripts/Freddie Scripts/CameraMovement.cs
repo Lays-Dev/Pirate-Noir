@@ -13,6 +13,8 @@ public class CameraMovement : MonoBehaviour
 
     private float xRotation; // Cumulative vertical rotation value
 
+    public PauseManagement PauseManagement; // Reference to the PauseManagement script
+
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen
@@ -21,6 +23,11 @@ public class CameraMovement : MonoBehaviour
 
     public void OnLook(InputAction.CallbackContext Context)
     {
+        if (PauseManagement.GameIsPaused) 
+        {
+            return;
+        }
+
         Vector2 LookInput = Context.ReadValue<Vector2>();
 
         // 1. Calculate the frame's deltas

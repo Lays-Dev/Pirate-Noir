@@ -54,11 +54,19 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region === UI ===
+    [Header("UI")]
+    public PauseManagement PauseManag;
+
+    #endregion
+
     private void Start()
     {
         Stats = GetComponent<PlayerStats>(); // Get the PlayerStats component
 
         RB = GetComponent<Rigidbody>(); // Get the Rigidbody component
+
+        PauseManag = Object.FindAnyObjectByType<PauseManagement>(); // Get the PauseManagement component
 
         RB.freezeRotation = true; // Prevent the Rigidbody from rotating due to physics
 
@@ -92,6 +100,17 @@ public class PlayerMovement : MonoBehaviour
             {
                 Anim.SetTrigger("Jump"); // Trigger jump animation
             }
+        }
+    }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (context.started && PauseManag != null)
+        {
+            if (PauseManag.GameIsPaused) 
+                PauseManag.Resume();
+            else 
+                PauseManag.Pause();    
         }
     }
 
