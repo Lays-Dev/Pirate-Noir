@@ -178,7 +178,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void AttackPlayer()
+    public void AttackPlayer() //maybe change to coroutine later.
     {
         // code to make enemy attack player, due to a lack of animation:
         // enemy will, for now, rush towards the player
