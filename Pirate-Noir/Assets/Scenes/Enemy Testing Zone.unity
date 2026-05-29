@@ -1488,18 +1488,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   health: 100
   damage: 10
-  speed: 4
+  speed: 7
   agent: {fileID: 1202674367}
   Player: {fileID: 1736666323}
   player: {fileID: 1736666318}
   Attack: {fileID: 1930605385}
   Sword: {fileID: 1930605384}
   attackCooldown: 2
+  AttackDuration: 3
   DetectRange: 10
   FarRange: 15
   distance: 0
   AttackPhase: 0
   AttackPhaseRange: 8
+  BehaviorTimer: 5
+  ChoosingBehavior: 0
+  IsDoingAction: 0
+  roamRadius: 10
+  roamTimer: 5
+  roamPosition: {x: 0, y: 0, z: 0}
+  rotationSpeed: 5
+  strafeSpeed: 4
   currentState: 0
 --- !u!195 &1202674367
 NavMeshAgent:
@@ -1511,7 +1520,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 1
+  m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
