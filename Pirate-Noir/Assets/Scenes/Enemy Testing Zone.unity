@@ -1495,8 +1495,12 @@ MonoBehaviour:
   Attack: {fileID: 1930605385}
   Sword: {fileID: 1930605384}
   attackCooldown: 2
-  DetectRange: 8
+  DetectRange: 10
+  FarRange: 15
   distance: 0
+  AttackPhase: 0
+  AttackPhaseRange: 8
+  currentState: 0
 --- !u!195 &1202674367
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1986,7 +1990,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3612770871091723636, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -12.6113
+      value: -18.78
       objectReference: {fileID: 0}
     - target: {fileID: 3612770871091723636, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2018,7 +2022,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3885509532149292140, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -8,7 +8,7 @@ public class Hurtbox : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            enemy.AttackPlayer();
+            enemy.DamagePlayer();
         }
     }
     
