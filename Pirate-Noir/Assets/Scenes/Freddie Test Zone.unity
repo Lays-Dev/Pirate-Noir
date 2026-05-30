@@ -660,7 +660,6 @@ MonoBehaviour:
   InSettings: 0
   SceneToLoad: MainMenu
   canvasGroup: {fileID: 1364919324}
-  PausbuttonGroup: {fileID: 0}
   fadeDuration: 0.3
   TopImage: {fileID: 1594949845}
   BottomImage: {fileID: 1625158819}
@@ -3576,6 +3575,18 @@ PrefabInstance:
     - target: {fileID: 4632178226081566010, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
       propertyPath: m_ActionEvents.Array.data[22].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5296888083960991240, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
+      propertyPath: BaseMoveSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5296888083960991240, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
+      propertyPath: BaseSprintSpeed
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5296888083960991240, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
+      propertyPath: SpeedMultiplier
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6685528757163221336, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
       propertyPath: PauseManag

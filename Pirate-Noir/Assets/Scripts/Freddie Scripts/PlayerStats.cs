@@ -3,10 +3,10 @@ using UnityEngine;
 public class PlayerStats : MonoBehaviour
 {
     [Header("Movement Speeds")]
-    public float BaseMoveSpeed = 7f;
-    public float BaseSprintSpeed = 12f;
+    public float BaseMoveSpeed = 6f;
+    public float BaseSprintSpeed = 9f;
 
-    public float SpeedMultiplier = 1.0f; // Multiplier for movement speed (e.g., from buffs/debuffs)
+    public float SpeedMultiplier = 2.0f; // Multiplier for movement speed (e.g., from buffs/debuffs)
     public float MoveSpeed => BaseMoveSpeed * SpeedMultiplier; // Current move speed considering modifiers
     public float SprintSpeed => BaseSprintSpeed * SpeedMultiplier; // Current sprint speed considering modifiers
 
