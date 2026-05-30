@@ -5,6 +5,7 @@ Notes from Lays Perez about Lays Scripts folder of Pirate Noir on 5-30-26
 KEY
 
 > = Future Additions
+M_ = Material
 
 -------------------------------------------------------------------------------------------------
 

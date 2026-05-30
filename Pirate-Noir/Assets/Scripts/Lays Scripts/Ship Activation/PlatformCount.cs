@@ -3,9 +3,9 @@ using UnityEngine;
 public class PlatformCount : MonoBehaviour
 {
     public PlatformProgression platformManager;
-
     private Rigidbody rb;
-    private bool activePhysics = false;
+    // Future implementation, enemies will slip down the ship when it rotates and sinks.
+    //private bool activePhysics = false;
 
     private void Awake()
     {
@@ -17,7 +17,6 @@ public class PlatformCount : MonoBehaviour
 
     public void ActivatePhysics()
     {
-        activePhysics = true;
 
         rb.isKinematic = false;
         rb.useGravity = true;
