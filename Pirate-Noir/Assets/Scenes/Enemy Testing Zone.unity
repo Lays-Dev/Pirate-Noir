@@ -1489,6 +1489,7 @@ MonoBehaviour:
   health: 100
   damage: 10
   speed: 7
+  speed2: 4
   agent: {fileID: 1202674367}
   Player: {fileID: 1736666323}
   player: {fileID: 1736666318}
