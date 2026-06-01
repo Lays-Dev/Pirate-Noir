@@ -130,7 +130,6 @@ GameObject:
   - component: {fileID: 127776064}
   - component: {fileID: 127776067}
   - component: {fileID: 127776066}
-  - component: {fileID: 127776065}
   m_Layer: 5
   m_Name: SprintEmpty
   m_TagString: Untagged
@@ -157,18 +156,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.000076293945}
   m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0}
---- !u!225 &127776065
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 127776063}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &127776066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1732,6 +1719,7 @@ GameObject:
   - component: {fileID: 1784286576}
   - component: {fileID: 1784286579}
   - component: {fileID: 1784286577}
+  - component: {fileID: 1784286580}
   m_Layer: 5
   m_Name: SprintUI
   m_TagString: Untagged
@@ -1768,9 +1756,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1784286575}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!222 &1784286579
 CanvasRenderer:
@@ -1780,6 +1768,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1784286575}
   m_CullTransparentMesh: 1
+--- !u!114 &1784286580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784286575}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8665cbfcd1f54c44d85c184275e64208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StaminaBarUI
+  staminaBar: {fileID: 1847990337}
+  playerStats: {fileID: 2049630543}
+  PauseManag: {fileID: 8845067030423063950}
+  fadeSpeed: 5
+  vis: {fileID: 1784286577}
 --- !u!1 &1830671128
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,7 +1936,6 @@ GameObject:
   - component: {fileID: 1847990337}
   - component: {fileID: 1847990340}
   - component: {fileID: 1847990339}
-  - component: {fileID: 1847990338}
   m_Layer: 5
   m_Name: SprintBar
   m_TagString: Untagged
@@ -1958,18 +1962,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0.000076293945}
   m_SizeDelta: {x: 1000, y: 50}
   m_Pivot: {x: 0.5, y: 0}
---- !u!225 &1847990338
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1847990336}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &1847990339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2415,6 +2407,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b387e1281a99824c97b1f5d525a91a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+--- !u!114 &2049630543 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5296888083960991240, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
+  m_PrefabInstance: {fileID: 2900115802716868360}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aee07df39ddefa49a60e38ec6c4fd01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
 --- !u!1 &2133497709
 GameObject:
   m_ObjectHideFlags: 0
@@ -3026,6 +3029,10 @@ PrefabInstance:
       propertyPath: PauseManag
       value: 
       objectReference: {fileID: 8845067030423063950}
+    - target: {fileID: 6685528757163221336, guid: 987058fafd4f42f4597e5ca12b60de3a, type: 3}
+      propertyPath: GroundLayer.m_Bits
+      value: 1224
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

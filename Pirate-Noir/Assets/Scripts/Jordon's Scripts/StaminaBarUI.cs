@@ -1,0 +1,48 @@
+using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
+
+
+public class StaminaBarUI : MonoBehaviour
+{
+    [Header("Stamina Bar UI")]
+    public RectTransform staminaBar; //to shrink the bar when stamina is being lost
+    public PlayerStats playerStats; // Reference to the PlayerStats component to access stamina values
+    public PauseManagement PauseManag; // Reference to the PauseManagement component to check if the game is paused
+    public float fadeSpeed = 5f; // How long it takes for the sprint bar to fade in and out
+
+
+    [Header("Transparency")]
+    public CanvasGroup vis; //to turn off and on depending 
+    
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (playerStats.MaxStamina > 0)
+        {
+            float targetXScale = playerStats.CurrentStamina / playerStats.MaxStamina;
+            if (targetXScale > 0f) 
+            {
+                staminaBar.localScale = new Vector3(targetXScale, 1f, 1f);
+            } 
+        }
+        if (playerStats.CurrentStamina < 20f) // If stamina is below 20%, make the bar Grey
+        {
+            staminaBar.GetComponent<Image>().color = Color.grey;
+        }
+        else // Otherwise, keep it White
+        {
+            staminaBar.GetComponent<Image>().color = Color.white;
+        }
+
+
+        float targetAlpha = (playerStats.CurrentStamina < playerStats.MaxStamina && PauseManag.GameIsPaused == false) ? 1f : 0f;
+
+        // 3. Smoothly shift the alpha toward the target value every frame
+        vis.alpha = Mathf.MoveTowards(vis.alpha, targetAlpha, fadeSpeed * Time.unscaledDeltaTime);
+    }
+
+
+
+}
