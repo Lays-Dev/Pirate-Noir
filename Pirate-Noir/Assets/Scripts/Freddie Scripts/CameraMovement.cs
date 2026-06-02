@@ -23,10 +23,11 @@ public class CameraMovement : MonoBehaviour
 
     public void OnLook(InputAction.CallbackContext Context)
     {
-        if (PauseManagement.GameIsPaused) 
+       /* if (PauseManagement.GameIsPaused) 
         {
             return;
         }
+        */
 
         Vector2 LookInput = Context.ReadValue<Vector2>();
 
