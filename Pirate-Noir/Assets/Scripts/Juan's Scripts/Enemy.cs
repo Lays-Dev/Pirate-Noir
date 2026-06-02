@@ -13,6 +13,8 @@ public class Enemy : MonoBehaviour
     public int health;
     public int damage;
     public float speed; // When enemy gets close, speed will slow it down.
+    // will put more settings later to customize speed in different phases, for now just the attack will change the speed.
+    public float speed2;
 
     public NavMeshAgent agent;
     public Transform Player;
@@ -179,6 +181,7 @@ public class Enemy : MonoBehaviour
     {
         // code to make the enemy walk around in a few selected areas at random from a specific distance from the enemy, will be used in later versions
         roamTime += Time.deltaTime;
+        agent.speed = speed2;
 
         // If enough time passed OR reached destination
         if (roamTime >= roamTimer || Vector3.Distance(transform.position, roamPosition) < 2f)
@@ -231,6 +234,7 @@ public class Enemy : MonoBehaviour
 
         // once player is detected, follow him, duh
         agent.SetDestination(Player.position);
+        agent.speed = speed2;
         if(AttackPhase && !IsDoingAction)
         {
             ImmediateAction();
@@ -317,6 +321,7 @@ public class Enemy : MonoBehaviour
     public IEnumerator StrafeLeft()
     {
         float timer = 0f;
+        agent.speed = speed2;
 
         while (timer < 2f)
         {
@@ -345,6 +350,7 @@ public class Enemy : MonoBehaviour
     public IEnumerator StrafeRight()
     {
         float timer = 0f;
+        agent.speed = speed2;
 
         while (timer < 2f)
         {
