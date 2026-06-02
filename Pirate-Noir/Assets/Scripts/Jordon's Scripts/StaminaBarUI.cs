@@ -39,7 +39,7 @@ public class StaminaBarUI : MonoBehaviour
 
         float targetAlpha = (playerStats.CurrentStamina < playerStats.MaxStamina && PauseManag.GameIsPaused == false) ? 1f : 0f;
 
-        // 3. Smoothly shift the alpha toward the target value every frame
+        // The ui will appear with a smoothing effect depending on the targetalpha
         vis.alpha = Mathf.MoveTowards(vis.alpha, targetAlpha, fadeSpeed * Time.unscaledDeltaTime);
     }
 
