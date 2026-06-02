@@ -57,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
     #region === UI ===
     [Header("UI")]
     public PauseManagement PauseManag;
+    
 
     #endregion
 

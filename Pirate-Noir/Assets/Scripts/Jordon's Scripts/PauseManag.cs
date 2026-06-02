@@ -1,11 +1,9 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI; 
-using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement; 
-using TMPro;
-using Unity.Cinemachine;
+using UnityEngine.Audio;
+
 
 
 public class PauseManagement : MonoBehaviour
@@ -34,14 +32,75 @@ public class PauseManagement : MonoBehaviour
     public float TBSH = 300f; //"Target Bottom Settings Height" for the bottom piece in settings mode
 
     [Space(10)]
-    public GameObject ResumeBut;
-    public GameObject OptionsBut;
-    public GameObject MainMenuBut;
+    [Header("Audio Settings")]
+    public GameObject PauseUI;
+    public GameObject SettingsUI;
+
+    private static readonly string masterVolumePref = "MasterVolumePref";
+    private static readonly string musicVolumePref = "MusicVolumePref";
+    private static readonly string sfxVolumePref = "SoundEffectsVolumePref";
+
+    public Slider masterVolumeSlider;
+    public Slider musicVolumeSlider;
+    public Slider sfxSlider;
+
+    private float masterVolume;
+    private float musicVolume;
+    private float sfxVolume;
+
+    public AudioMixer audioMixer;
 
     #endregion
+    private void OnValidate()
+    {
+        if (audioMixer == null)
+        {
+            string[] guids = UnityEditor.AssetDatabase.FindAssets("MasterVolume t:AudioMixer");
 
+            if (guids.Length > 0)
+            {
+                // Convert the string id to a file path 
+                string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
+                
+                // using the previously setup path load the actual file and assign it to the inspector
+                audioMixer = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Audio.AudioMixer>(path);
+                
+                // tell Unity to save this change in the scene/prefab
+                UnityEditor.EditorUtility.SetDirty(this);
+                
+                Debug.Log($"Successfully auto-assigned Audio Mixer from: {path}", this);
+            }
+        }
+    }
 
-    #region === Pause Transformation and Options ===
+    void Start()
+    {
+            masterVolume = PlayerPrefs.GetFloat(masterVolumePref);
+            musicVolume = PlayerPrefs.GetFloat(musicVolumePref);
+            sfxVolume = PlayerPrefs.GetFloat(sfxVolumePref);
+
+            // then saves the value to the sliders -
+                if (masterVolumeSlider != null && audioMixer != null)
+                {
+                    masterVolumeSlider.value = masterVolume;
+                }
+                    if (musicVolumeSlider != null && audioMixer != null)
+                    {
+                        musicVolumeSlider.value = musicVolume;
+                    }
+                        if (sfxSlider != null && audioMixer != null)
+                        {
+                            sfxSlider.value = sfxVolume;
+                        }
+            // and applies it to the AudioMixer
+            SetMasterVolume(masterVolume);
+            SetBGMVolume(musicVolume);
+            SetSFXVolume(sfxVolume);
+    }
+
+    
+
+    #region === Pause Buttons ===
 
     public void Pause()
     {
@@ -64,6 +123,63 @@ public class PauseManagement : MonoBehaviour
         
         
     }
+
+    public void Resume()
+    {
+        //Make the text and buttons dissappear
+        //move the images from the open position to the closed position for the pause area 
+        //transition to turn off opacity and make the ui dissappear for the pause area
+
+        Cursor.lockState = CursorLockMode.Locked; //unlock cursor so the player can click on the buttons
+        Cursor.visible = false;
+
+        PauseUI.SetActive(false);
+        
+        Time.timeScale = 1f;
+
+        StartCoroutine(CloseTop());
+        StartCoroutine(CloseBottom());
+
+        GameIsPaused = false;
+
+        StartCoroutine(FadeOut());
+        
+    }
+    public void Options()
+    {
+        //transition to turn on opacity and allow the ui to appear for the pause area
+        //move the images from the closed position to the open position for the pause area 
+        //Check if images are there and make the text and buttons appear
+        
+
+        InSettings = true;
+        StartCoroutine(MoveTop());
+        StartCoroutine(MoveBottom());
+    }
+
+    public void LoadSceneByName()
+	{
+		SceneManager.LoadScene(SceneToLoad);
+        Debug.Log("Scene loaded: " + SceneToLoad);
+        Time.timeScale = 1f;
+        GameIsPaused = false;
+    }
+
+    public void Apply()
+    {
+        
+    }
+
+    public void Back()
+    {
+        InSettings = false;
+        StartCoroutine(SettingsMoveTop());
+        StartCoroutine(SettingsMoveBottom());
+
+    }
+    #endregion
+
+    #region === Animations for Pause ===
     private IEnumerator FadeIn()
     {
         float elapsedTime = 0f;
@@ -93,92 +209,6 @@ public class PauseManagement : MonoBehaviour
             canvasGroup.interactable = true;
         }
     }
-
-    private IEnumerator MoveTop()
-    {
-        float elapsedTime = 0f;
-        float startPos = TCTPH; // Where are we starting from in the ui
-        float targetPos = InSettings ? TTSH : TOTPH; // Desired value
-        // Keep looping as long as we haven't reached our target duration
-        while (elapsedTime < fadeDuration)
-        {
-            // Add the time passed since the last frame to see if its passed the cooldown
-            elapsedTime += Time.unscaledDeltaTime;
-
-            // Calculate our progress percentage (between 0.0 and 1.0)
-            float percentage = elapsedTime / fadeDuration;
-
-            Vector2 currentPos = TopImage.anchoredPosition; // keep the x position
-            float newY = Mathf.Lerp(startPos, targetPos, percentage);
-            
-            TopImage.anchoredPosition = new Vector2(currentPos.x, newY); // Set the new position
-
-            // Wait for the very next frame before continuing the loop
-            yield return null;
-        }
-
-        TopImage.anchoredPosition = new Vector2(TopImage.anchoredPosition.x, targetPos);
-        
-        if (!InSettings)
-        {
-        ResumeBut.SetActive(true);
-        OptionsBut.SetActive(true);
-        MainMenuBut.SetActive(true);
-        }
-    }
-
-    private IEnumerator MoveBottom()
-    {
-        float elapsedTime = 0f;
-        float startPos = TCBPH; // Where are we starting from in the ui
-        float targetPos = InSettings ? TBSH : TOBPH; // Desired value
-        // Keep looping as long as we haven't reached our target duration
-        while (elapsedTime < fadeDuration)
-        {
-            // Add the time passed since the last frame to see if its passed the cooldown
-            elapsedTime += Time.unscaledDeltaTime;
-
-            // Calculate our progress percentage (between 0.0 and 1.0)
-            float percentage = elapsedTime / fadeDuration;
-
-            Vector2 currentPos = BottomImage.anchoredPosition; // keep the x position
-            float newY = Mathf.Lerp(startPos, targetPos, percentage);
-            
-            BottomImage.anchoredPosition = new Vector2(currentPos.x, newY); // Set the new position
-
-            // Wait for the very next frame before continuing the loop
-            yield return null;
-        }
-
-        BottomImage.anchoredPosition = new Vector2(BottomImage.anchoredPosition.x, targetPos);
-
-        // This is to make sure it doesn't do any fancy decimals and is a perfect int at the end of the fade
-        
-    }
-
-    public void Resume()
-    {
-        //Make the text and buttons dissappear
-        //move the images from the open position to the closed position for the pause area 
-        //transition to turn off opacity and make the ui dissappear for the pause area
-
-        Cursor.lockState = CursorLockMode.Locked; //unlock cursor so the player can click on the buttons
-        Cursor.visible = false;
-
-        ResumeBut.SetActive(false);
-        OptionsBut.SetActive(false);
-        MainMenuBut.SetActive(false);
-        Time.timeScale = 1f;
-
-        StartCoroutine(CloseTop());
-        StartCoroutine(CloseBottom());
-
-        GameIsPaused = false;
-
-        StartCoroutine(FadeOut());
-        
-    }
-
     private IEnumerator FadeOut()
     {
         canvasGroup.interactable = false;
@@ -209,11 +239,19 @@ public class PauseManagement : MonoBehaviour
             canvasGroup.interactable = false;
         }
     }
-    private IEnumerator CloseTop()
+    private IEnumerator MoveTop()
     {
+        if (!InSettings) //deactivate stuff
+        {
+            SettingsUI.SetActive(false);
+        }
+        else
+        {
+            PauseUI.SetActive(false);
+        }
         float elapsedTime = 0f;
-        float startPos = TOTPH; // Where are we starting from in the ui
-        float targetPos = InSettings ? TTSH : TCTPH; // Desired value
+        float startPos = InSettings ? TOTPH: TCTPH; // Where are we starting from in the ui
+        float targetPos = InSettings ? TTSH : TOTPH; // Desired value
         // Keep looping as long as we haven't reached our target duration
         while (elapsedTime < fadeDuration)
         {
@@ -234,19 +272,20 @@ public class PauseManagement : MonoBehaviour
 
         TopImage.anchoredPosition = new Vector2(TopImage.anchoredPosition.x, targetPos);
         
-        if (!InSettings)
+        if (!InSettings) //reactivate stuff
         {
-        ResumeBut.SetActive(true);
-        OptionsBut.SetActive(true);
-        MainMenuBut.SetActive(true);
+            PauseUI.SetActive(true);
+        }
+        else
+        {
+            SettingsUI.SetActive(true);
         }
     }
-
-    private IEnumerator CloseBottom()
+    private IEnumerator MoveBottom()
     {
         float elapsedTime = 0f;
-        float startPos = TOBPH; // Where are we starting from in the ui
-        float targetPos = InSettings ? TBSH : TCBPH; // Desired value
+        float startPos =  InSettings ? TOBPH : TCBPH; // Where are we starting from in the ui
+        float targetPos = InSettings ? TBSH : TOBPH; // Desired value
         // Keep looping as long as we haven't reached our target duration
         while (elapsedTime < fadeDuration)
         {
@@ -270,30 +309,202 @@ public class PauseManagement : MonoBehaviour
         // This is to make sure it doesn't do any fancy decimals and is a perfect int at the end of the fade
         
     }
+    private IEnumerator CloseTop()
+    {
+        if (!InSettings) //deactivate stuff
+        {
+            SettingsUI.SetActive(false);
+        }
+        else
+        {
+            PauseUI.SetActive(false);
+        }
+        float elapsedTime = 0f;
+        float startPos = TOTPH; // Where are we starting from in the ui
+        float targetPos = InSettings ? TOTPH : TCTPH; // Desired value
+        // Keep looping as long as we haven't reached our target duration
+        while (elapsedTime < fadeDuration)
+        {
+            // Add the time passed since the last frame to see if its passed the cooldown
+            elapsedTime += Time.unscaledDeltaTime;
 
+            // Calculate our progress percentage (between 0.0 and 1.0)
+            float percentage = elapsedTime / fadeDuration;
+
+            Vector2 currentPos = TopImage.anchoredPosition; // keep the x position
+            float newY = Mathf.Lerp(startPos, targetPos, percentage);
+            
+            TopImage.anchoredPosition = new Vector2(currentPos.x, newY); // Set the new position
+
+            // Wait for the very next frame before continuing the loop
+            yield return null;
+        }
+
+        TopImage.anchoredPosition = new Vector2(TopImage.anchoredPosition.x, targetPos);
+        
+        if (!InSettings) //reactivate stuff
+        {
+            PauseUI.SetActive(true);
+        }
+        else
+        {
+            SettingsUI.SetActive(true);
+        }
+    }
+    private IEnumerator CloseBottom()
+    {
+        float elapsedTime = 0f;
+        float startPos = TOBPH; // Where are we starting from in the ui
+        float targetPos = InSettings ? TOBPH : TCBPH; // Desired value
+        // Keep looping as long as we haven't reached our target duration
+        while (elapsedTime < fadeDuration)
+        {
+            // Add the time passed since the last frame to see if its passed the cooldown
+            elapsedTime += Time.unscaledDeltaTime;
+
+            // Calculate our progress percentage (between 0.0 and 1.0)
+            float percentage = elapsedTime / fadeDuration;
+
+            Vector2 currentPos = BottomImage.anchoredPosition; // keep the x position
+            float newY = Mathf.Lerp(startPos, targetPos, percentage);
+            
+            BottomImage.anchoredPosition = new Vector2(currentPos.x, newY); // Set the new position
+
+            // Wait for the very next frame before continuing the loop
+            yield return null;
+        }
+
+        BottomImage.anchoredPosition = new Vector2(BottomImage.anchoredPosition.x, targetPos);
+
+        // This is to make sure it doesn't do any fancy decimals and is a perfect int at the end of the fade
+        
+    }
+    private IEnumerator SettingsMoveTop()
+    {
+        if (!InSettings) //deactivate stuff
+        {
+            SettingsUI.SetActive(false);
+        }
+        else
+        {
+            PauseUI.SetActive(false);
+        }
+        float elapsedTime = 0f;
+        float startPos = TTSH; // Where are we starting from in the ui
+        float targetPos = TOTPH; // Desired value
+        // Keep looping as long as we haven't reached our target duration
+        while (elapsedTime < fadeDuration)
+        {
+            // Add the time passed since the last frame to see if its passed the cooldown
+            elapsedTime += Time.unscaledDeltaTime;
+
+            // Calculate our progress percentage (between 0.0 and 1.0)
+            float percentage = elapsedTime / fadeDuration;
+
+            Vector2 currentPos = TopImage.anchoredPosition; // keep the x position
+            float newY = Mathf.Lerp(startPos, targetPos, percentage);
+            
+            TopImage.anchoredPosition = new Vector2(currentPos.x, newY); // Set the new position
+
+            // Wait for the very next frame before continuing the loop
+            yield return null;
+        }
+
+        TopImage.anchoredPosition = new Vector2(TopImage.anchoredPosition.x, targetPos);
+        
+        if (!InSettings) //reactivate stuff
+        {
+            PauseUI.SetActive(true);
+        }
+        else
+        {
+            SettingsUI.SetActive(true);
+        }
+    }
+    private IEnumerator SettingsMoveBottom()
+    {
+        float elapsedTime = 0f;
+        float startPos = TBSH; // Where are we starting from in the ui
+        float targetPos = TOBPH; // Desired value
+        // Keep looping as long as we haven't reached our target duration
+        while (elapsedTime < fadeDuration)
+        {
+            // Add the time passed since the last frame to see if its passed the cooldown
+            elapsedTime += Time.unscaledDeltaTime;
+
+            // Calculate our progress percentage (between 0.0 and 1.0)
+            float percentage = elapsedTime / fadeDuration;
+
+            Vector2 currentPos = BottomImage.anchoredPosition; // keep the x position
+            float newY = Mathf.Lerp(startPos, targetPos, percentage);
+            
+            BottomImage.anchoredPosition = new Vector2(currentPos.x, newY); // Set the new position
+
+            // Wait for the very next frame before continuing the loop
+            yield return null;
+        }
+
+        BottomImage.anchoredPosition = new Vector2(BottomImage.anchoredPosition.x, targetPos);
+
+        // This is to make sure it doesn't do any fancy decimals and is a perfect int at the end of the fade
+        
+    }
     #endregion
 
 
+    #region == Settings & Audio  ==
 
-    #region == Settings Transformation and Options ==
+    public void SaveSoundSettings()
+    {
+        PlayerPrefs.SetFloat(masterVolumePref, masterVolumeSlider.value);
+        PlayerPrefs.SetFloat(musicVolumePref, musicVolumeSlider.value);
+        PlayerPrefs.SetFloat(sfxVolumePref, sfxSlider.value);
+        PlayerPrefs.Save();
 
-    //make the text and buttons dissappear for the pause menu
-    //move the images from the standard position to the updated position for the settings area
-    //then make the text and buttons appear for the settings menu
+    }
 
+    public void UpdateSound()
+    {
+        SetMasterVolume(masterVolumeSlider.value);
+        SetBGMVolume(musicVolumeSlider.value);
+        SetSFXVolume(sfxSlider.value);
+        SaveSoundSettings();
+    }
 
+    // AudioMixers will use int values for decibels insteas of just 0-100% values,
+    // so you have to convert the value so the mixer will read it correctly.
+    public void SetMasterVolume(float value)
+    {
+        value = Mathf.Clamp(value, 0.0001f, 1f);
+        audioMixer.SetFloat("MasterVolume", Mathf.Log10(value) * 20);
+    }
 
+    public void SetBGMVolume(float value)
+    {
+        value = Mathf.Clamp(value, 0.0001f, 1f);
+        audioMixer.SetFloat("MusicVolume", Mathf.Log10(value) * 20);
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        value = Mathf.Clamp(value, 0.0001f, 1f);
+        audioMixer.SetFloat("SFXVolume", Mathf.Log10(value) * 20);
+    }
 
     #endregion
 
-    #region === Transition Scenes ===
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public void LoadSceneByName()
-	{
-		SceneManager.LoadScene(SceneToLoad);
-        Debug.Log("Scene loaded: " + SceneToLoad);
-        Time.timeScale = 1f;
-        GameIsPaused = false;
+    #region === Quit Game ===
+
+    public void Quit()
+    {
+        Debug.Log("Quit button pressed\nGame exiting...");
+        Application.Quit();
+
+
+        // stops playback in editor to test out mechanics when called (can be comented out)
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #endif
     }
     
     #endregion
