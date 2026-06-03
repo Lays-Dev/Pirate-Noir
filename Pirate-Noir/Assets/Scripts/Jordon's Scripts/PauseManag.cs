@@ -28,8 +28,8 @@ public class PauseManagement : MonoBehaviour
     public float TOBPH = -223f; //"Target Open Bottom Pause Height" for the bottom piece
     public float TCTPH = 56f; //"Target Closed Top Pause Height" for the top piece
     public float TCBPH = -56f; //"Target Closed Bottom Pause Height" for the bottom piece
-    public float TTSH = 300f; //"Target Top Settings Height" for the bottom piece in settings mode
-    public float TBSH = 300f; //"Target Bottom Settings Height" for the bottom piece in settings mode
+    public float TTSH = 330f; //"Target Top Settings Height" for the bottom piece in settings mode
+    public float TBSH = -330f; //"Target Bottom Settings Height" for the bottom piece in settings mode
 
     [Space(10)]
     [Header("Audio Settings")]
@@ -75,6 +75,39 @@ public class PauseManagement : MonoBehaviour
 
     void Start()
     {
+        #region === Auto Assigning ===
+
+        PauseUI = GameObject.Find("PauseUI"); // Get the PauseUI Gameobject component 
+        SettingsUI = GameObject.Find("Settings"); // Get the Settings Gameobject component 
+
+
+
+        GameObject canvgroup = GameObject.Find("PauseMenu"); // Get the canvas group from the gameobject PauseMenu 
+        if (canvgroup != null) canvasGroup = canvgroup.GetComponent<CanvasGroup>();
+
+
+        GameObject TopImg = GameObject.Find("Top"); // Get the Top Image Rect component from the gameobject Top
+        if (TopImg != null) TopImage = TopImg.GetComponent<RectTransform>(); // check if its there
+        GameObject BottomImg = GameObject.Find("Bottom"); // Get the Bottom Image Rect component from the gameobject Bottom
+        if (BottomImg != null) BottomImage = BottomImg.GetComponent<RectTransform>(); // check if its there
+
+
+        GameObject MasVolume = GameObject.Find("Master Volume"); // Get the Master Volume Slider component 
+        if (MasVolume != null) masterVolumeSlider = MasVolume.GetComponent<Slider>(); // check if its there
+        
+        GameObject MusicSlider = GameObject.Find("Music Volume"); // Get the Music Volume Slider component 
+        if (MusicSlider != null) musicVolumeSlider = MusicSlider.GetComponent<Slider>(); // check if its there
+        
+        GameObject sfx = GameObject.Find("SFX Volume"); // Get the SFX Slider component 
+        if (sfx != null) sfxSlider = sfx.GetComponent<Slider>(); // check if its there
+
+        if (PauseUI != null) PauseUI.SetActive(false);
+        if (SettingsUI != null) SettingsUI.SetActive(false);
+
+        #endregion
+
+           
+
             masterVolume = PlayerPrefs.GetFloat(masterVolumePref);
             musicVolume = PlayerPrefs.GetFloat(musicVolumePref);
             sfxVolume = PlayerPrefs.GetFloat(sfxVolumePref);

@@ -19,17 +19,22 @@ public class CameraMovement : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen
         Cursor.visible = false; // Hide the cursor
+        
+        PauseManagement = Object.FindAnyObjectByType<PauseManagement>(); // Get the PauseManagement component
+
     }
 
     public void OnLook(InputAction.CallbackContext Context)
     {
-        if (PauseManagement != null)
-        {
-            if (PauseManagement.GameIsPaused) 
+        // if (PauseManagement != null) (to fix it not being there)
+        
+            if (PauseManagement != null)
             {
-                return;
+                if (PauseManagement.GameIsPaused) 
+                {
+                    return;
+                }
             }
-        }
         
         
 

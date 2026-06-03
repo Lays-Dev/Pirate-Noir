@@ -15,6 +15,15 @@ public class StaminaBarUI : MonoBehaviour
     [Header("Transparency")]
     public CanvasGroup vis; //to turn off and on depending 
     
+    void Start()
+    {
+        playerStats = Object.FindAnyObjectByType<PlayerStats>(); // Get the PlayerStats component
+        PauseManag = Object.FindAnyObjectByType<PauseManagement>(); // Get the PauseManagement component
+        vis = GetComponent<CanvasGroup>(); // Get the canvasgroup component for sprint bar visibility control
+        GameObject StaminaBar = GameObject.Find("SprintBar"); // Get the stamina bar component 
+        if (StaminaBar != null) staminaBar = StaminaBar.GetComponent<RectTransform>(); // check if its there
+        vis.alpha = 0f; // Start with the stamina bar invisible
+    }
 
     // Update is called once per frame
     void Update()
