@@ -10,7 +10,11 @@ public class PlatformProgression : MonoBehaviour
 /// Empty space to organize region headers
 ///
 
+
 #region Ship Progression
+
+
+
 
     [Header("Ship Progression Settings: Hover over each variable for more info")]
     [Header(" ")]
