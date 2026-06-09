@@ -34,14 +34,20 @@ public class Enemy : MonoBehaviour
 
     /*public Animator animator; // to play attack animations, will be used in later versions
     public bool isAttacking = false; // to prevent the enemy from attacking multiple times in a row without cooldown, will be used in later versions*/
-
+    
+    
+    [Header("Distance Check")]
+    private float Distance; // to optimize distance checking
+    private float AttackPhaseSqrRange; // squared range for attack phase
+    private float FarSqrRange; // squared range for far range
     public float DetectRange = 8f; // the range from which the enemy will detect and attack the player.
     public float FarRange = 15f;
-    public float distance;
+    public float AttackPhaseRange = 5f;
+    //public float distance; 
+
 
     [Header("Behavior Settings")]
     public bool AttackPhase = false;
-    public float AttackPhaseRange = 5f;
     public float BehaviorTimer = 5f;
     public bool ChoosingBehavior = false;
     public bool IsDoingAction = false;
@@ -69,31 +75,29 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         Sword.SetActive(false); // sword is disabled at the start, will be enabled when attacking, this will probably change in later versions
+        
+        AttackPhaseSqrRange = AttackPhaseRange * AttackPhaseRange;
+        FarSqrRange = FarRange * FarRange;
+
         currentState = EnemyState.Idle; // enemy starts in idle state, this will probably change in later versions
 
     }
 
     // Enemy will have two "phases", the roam and the attack phase
     /*
-    Enemy roam will have:
-        - Idle
-        - Roam
-        - Chase
-    
-    Enemy will reach attack phase when player is within the specified range, having:
-        - Strafe
-        - Attack
+    Behaviors I still need to do implement
         - Approach (might make this one connect TO the attack)
         - Step back
 
     I also want to find a way in which enemies have a smaller chance of repeating an action the more they do it.
-
     */
 
     // Update is called once per frame
     void Update()
     {
-        distance = Vector3.Distance(this.transform.position, Player.position); // distance which will be used to measure and trigger enemy attacks
+        Distance = (this.transform.position - Player.position).sqrMagnitude;
+        
+        //distance = Vector3.Distance(this.transform.position, Player.position); // distance which will be used to measure and trigger enemy attacks
 
         //agent.SetDestination(Player.position);
         
@@ -143,13 +147,13 @@ public class Enemy : MonoBehaviour
             
         }
 
-        if(distance <= AttackPhaseRange)
+        if(Distance <= AttackPhaseSqrRange)
         {
             AttackPhase = true;
             //IsDoingAction = false; // this will allow the enemy to choose an attack when entering attack phase, this will probably change in later versions
         }
 
-        else if(distance > AttackPhaseRange)
+        else if(Distance > AttackPhaseSqrRange)
         {
             AttackPhase = false;
             
@@ -166,7 +170,7 @@ public class Enemy : MonoBehaviour
     {
         // idle animation probably goes here.
 
-        if(distance <= FarRange)
+        if(Distance <= FarSqrRange)
         {
             currentState = EnemyState.Chase; // if player is within far range, enemy will start chasing him, this will be used in later versions to make the enemy do different things based on the state.
         }
@@ -184,7 +188,7 @@ public class Enemy : MonoBehaviour
         agent.speed = speed2;
 
         // If enough time passed OR reached destination
-        if (roamTime >= roamTimer || Vector3.Distance(transform.position, roamPosition) < 2f)
+        if (roamTime >= roamTimer || (this.transform.position - roamPosition).sqrMagnitude < 4f) 
         {
             roamPosition = RandomDirection();
 
@@ -202,7 +206,7 @@ public class Enemy : MonoBehaviour
             */
         }
 
-        if(distance <= FarRange)
+        if(Distance <= FarRange)
         {
             currentState = EnemyState.Chase; // Same thing as the idle .
         }
@@ -325,6 +329,28 @@ public class Enemy : MonoBehaviour
 
         while (timer < 2f)
         {
+            // old version of the loop calls player position and transform position repeatedly, this is a more optimized version
+            // Unity does not have to call for the transform and player position multiple times in a single frame anymore as it calls for this instead.
+            Vector3 enPosition = transform.position;
+            Vector3 playerPosition = Player.position;
+            
+            var OffsetPlayer = enPosition - playerPosition; // get the direction from the enemy to the player
+            var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
+            
+            agent.SetDestination(enPosition + StrafeDirection); // set the destination to the left of the player, this will probably change in later versions
+            lookPos = playerPosition - enPosition; // keeps the enemy looking at the player
+            lookPos.y = 0; // we aren't trying to make the enemy go up
+            rotation = Quaternion.LookRotation(lookPos);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
+
+            //timer += Time.deltaTime;
+            
+            // timer changed so it doesn't set a destination every frame.
+            yield return new WaitForSeconds(0.2f); 
+            timer += 0.2f;
+
+            /*
+            OLD Version:
             var OffsetPlayer = transform.position - Player.position; // get the direction from the enemy to the player
             var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
             agent.SetDestination(transform.position + StrafeDirection); // set the destination to the left of the player, this will probably change in later versions
@@ -332,9 +358,7 @@ public class Enemy : MonoBehaviour
             lookPos.y = 0; // we aren't trying to make the enemy go up
             rotation = Quaternion.LookRotation(lookPos);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
-
-            timer += Time.deltaTime;
-            yield return null; // wait for the next frame before continuing the loop
+            */
         }
 
 
@@ -348,12 +372,30 @@ public class Enemy : MonoBehaviour
     }
 
     public IEnumerator StrafeRight()
-    {
+    {   
         float timer = 0f;
         agent.speed = speed2;
 
         while (timer < 2f)
         {
+            Vector3 enPosition = transform.position;
+            Vector3 playerPosition = Player.position;
+            
+            var OffsetPlayer = playerPosition - enPosition; // get the direction from the enemy to the player
+            var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
+            
+            agent.SetDestination(enPosition + StrafeDirection); // set the destination to the left of the player, this will probably change in later versions
+            lookPos = playerPosition - enPosition; // keeps the enemy looking at the player
+            lookPos.y = 0; // we aren't trying to make the enemy go up
+            rotation = Quaternion.LookRotation(lookPos);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
+
+            //timer += Time.deltaTime;
+            yield return new WaitForSeconds(0.2f); // wait for the next frame before continuing the loop
+            timer += 0.2f;
+
+            /*
+            OLD Version:
             var OffsetPlayer = Player.position - transform.position; // get the direction from the enemy to the player
             var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
             agent.SetDestination(transform.position + StrafeDirection); // set the destination to the left of the player, this will probably change in later versions
@@ -361,9 +403,7 @@ public class Enemy : MonoBehaviour
             lookPos.y = 0; // we aren't trying to make the enemy go up
             rotation = Quaternion.LookRotation(lookPos);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
-
-            timer += Time.deltaTime;
-            yield return null; // wait for the next frame before continuing the loop
+            */
         }
 
 
