@@ -43,7 +43,10 @@ public class Enemy : MonoBehaviour
     public float DetectRange = 8f; // the range from which the enemy will detect and attack the player.
     public float FarRange = 15f;
     public float AttackPhaseRange = 5f;
-    //public float distance; 
+    //public float distance;
+
+    public float stopAttackRange = 20f;
+    public float stopAttackSqrRange;
 
 
     [Header("Behavior Settings")]
@@ -62,8 +65,8 @@ public class Enemy : MonoBehaviour
 
     [Header("Strafe Settings")]
     public float rotationSpeed = 5f;
-    private Vector3 lookPos;
-    private Quaternion rotation;
+    public Vector3 lookPos;
+    public Quaternion rotation;
     public float strafeSpeed = 4f;
 
     public EnemyState currentState; // to determine the current state of the enemy, will be used in later versions to make the enemy do different things based on the state.
@@ -78,6 +81,7 @@ public class Enemy : MonoBehaviour
         
         AttackPhaseSqrRange = AttackPhaseRange * AttackPhaseRange;
         FarSqrRange = FarRange * FarRange;
+        stopAttackSqrRange = stopAttackRange * stopAttackRange;
 
         currentState = EnemyState.Idle; // enemy starts in idle state, this will probably change in later versions
 
@@ -153,7 +157,7 @@ public class Enemy : MonoBehaviour
             //IsDoingAction = false; // this will allow the enemy to choose an attack when entering attack phase, this will probably change in later versions
         }
 
-        else if(Distance > AttackPhaseSqrRange)
+        else if(Distance > stopAttackSqrRange)
         {
             AttackPhase = false;
             
@@ -206,7 +210,7 @@ public class Enemy : MonoBehaviour
             */
         }
 
-        if(Distance <= FarRange)
+        if(Distance <= FarSqrRange)
         {
             currentState = EnemyState.Chase; // Same thing as the idle .
         }
@@ -262,7 +266,7 @@ public class Enemy : MonoBehaviour
     #endregion
 
     #region AttackCode
-    public IEnumerator AttackPlayer() //maybe change to coroutine later.
+    public virtual IEnumerator AttackPlayer() //maybe change to coroutine later.
     {
         //IsDoingAction = true;
         // code to make enemy attack player, due to a lack of animation:
@@ -322,7 +326,7 @@ public class Enemy : MonoBehaviour
     #endregion
 
     #region StrafeCode
-    public IEnumerator StrafeLeft()
+    public virtual IEnumerator StrafeLeft()
     {
         float timer = 0f;
         agent.speed = speed2;
@@ -371,7 +375,7 @@ public class Enemy : MonoBehaviour
         }*/
     }
 
-    public IEnumerator StrafeRight()
+    public virtual IEnumerator StrafeRight()
     {   
         float timer = 0f;
         agent.speed = speed2;
@@ -502,7 +506,7 @@ public class Enemy : MonoBehaviour
         
     }
 
-    private void ImmediateAction()
+    public void ImmediateAction()
     {
         int choice = Random.Range(0, 100);
         
@@ -520,6 +524,8 @@ public class Enemy : MonoBehaviour
             {
                 currentState = EnemyState.Attack;
             }
+
+            Debug.Log("Picked: " + currentState);
             /* don't have the other things implemented yet.
             else if (choice < 75)
             {
