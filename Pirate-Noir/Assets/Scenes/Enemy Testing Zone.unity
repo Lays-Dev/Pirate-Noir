@@ -395,8 +395,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HealthBar
   healthBar: {fileID: 1676801836}
   EaseHealthBar: {fileID: 65496324}
+  HealthUI: {fileID: 0}
   lerpSpeed: 1
   player: {fileID: 1736666328}
+  PauseManag: {fileID: 0}
 --- !u!1001 &349516395
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1629,9 +1631,8 @@ MonoBehaviour:
   AttackDuration: 3
   DetectRange: 10
   FarRange: 15
-  distance: 0
-  AttackPhase: 0
   AttackPhaseRange: 8
+  AttackPhase: 0
   BehaviorTimer: 5
   ChoosingBehavior: 0
   IsDoingAction: 0
