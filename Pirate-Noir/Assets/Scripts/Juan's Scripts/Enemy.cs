@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
     // every enemy script will inherit from this big boy
 
     #region Variables
-    public int health;
+    public float health;
     public int damage;
     public float speed; // When enemy gets close, speed will slow it down.
     // will put more settings later to customize speed in different phases, for now just the attack will change the speed.

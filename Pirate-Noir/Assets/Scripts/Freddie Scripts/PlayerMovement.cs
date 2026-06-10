@@ -47,6 +47,11 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask InteractableLayer; // Assign this in Inspector!
     #endregion
 
+    #region === Attack Settings ===
+    [Header("Attack Settings")]
+    public LayerMask AttackableLayer;
+    #endregion
+
     #region === Animation ===
 
     [Header("Animation")] // Inspector header for animation settings
@@ -183,23 +188,46 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
-    public void OnInteract(InputAction.CallbackContext context)
+    public void OnInteract(InputAction.CallbackContext Context)
     {
-        Debug.Log("Interact button pressed, checking for interactables...");
-        
-        Ray Ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward); // Create a ray from the camera's position forward
-        Debug.DrawRay(Ray.origin, Ray.direction * InteractRange, Color.red, 2f); // Draw the ray in the scene view for debugging purposes
-
-        // Added QueryTriggerInteraction.Collide to include Triggers in the raycast
-        if (Physics.Raycast(Ray, out RaycastHit hit, InteractRange, InteractableLayer, QueryTriggerInteraction.Collide))
+        if (Context.started) // Only check for interactables when the interact button is initially pressed
         {
-            if (hit.collider.TryGetComponent(out IInteractable Interactable))
+            Debug.Log("Interact button pressed, checking for interactables...");
+            
+            Ray Ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward); // Create a ray from the camera's position forward
+            Debug.DrawRay(Ray.origin, Ray.direction * InteractRange, Color.red, 2f); // Draw the ray in the scene view for debugging purposes
+
+            // Added QueryTriggerInteraction.Collide to include Triggers in the raycast
+            if (Physics.Raycast(Ray, out RaycastHit hit, InteractRange, InteractableLayer, QueryTriggerInteraction.Collide))
             {
-                Interactable.Interact(); // Call the Interact method on the interactable object
-                Debug.Log($"Interacted with {hit.collider.name}"); // Log the name of the interacted object for debugging
+                if (hit.collider.TryGetComponent(out IInteractable Interactable))
+                {
+                    Interactable.Interact(); // Call the Interact method on the interactable object
+                    Debug.Log($"Interacted with {hit.collider.name}"); // Log the name of the interacted object for debugging
+                }
             }
         }
+    }
 
+    public void OnAttack(InputAction.CallbackContext Context)
+    {
+        if (Context.started) // Only check for Enemies when the attack button is initially pressed
+        {
+            Debug.Log("Attack button pressed, checking for Enemies...");
+            
+            Ray AttackRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward); // Create a ray from the camera's position forward
+            Debug.DrawRay(AttackRay.origin, AttackRay.direction * Stats.AttackRange, Color.red, 2f); // Draw the ray in the scene view for debugging purposes
+
+            // Added QueryTriggerInteraction.Collide to include Triggers in the raycast
+            if (Physics.Raycast(AttackRay, out RaycastHit hit, Stats.AttackRange, AttackableLayer, QueryTriggerInteraction.Collide))
+            {
+                if (hit.collider.TryGetComponent(out IInteractable Interactable))
+                {
+                    Interactable.Interact(); // Call the Interact method on the interactable object
+                    Debug.Log($"Attacked {hit.collider.name}"); // Log the name of the Attacked object for debugging
+                }
+            }
+        }
     }
 
     #region === Animation Logic ===

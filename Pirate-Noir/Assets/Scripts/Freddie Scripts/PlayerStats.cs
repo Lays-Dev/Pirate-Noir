@@ -19,6 +19,13 @@ public class PlayerStats : MonoBehaviour
     public float CurrentStamina = 100; // Current stamina of the player
     public float MaxStamina = 100; // Maximum stamina of the player
 
+    [Header("Combat")]
+    public float BaseAttackPower = 10f; // Base attack power of the player
+    public float AttackMultiplier = 1.0f; // Multiplier for attack power (e.g., from buffs/debuffs)
+    public float AttackRange = 3f; // Range of the player's attacks
+    public float AttackCooldown = 1f; // Time between attacks in seconds
+    public float AttackPower => BaseAttackPower * AttackMultiplier; // Current attack power considering modifiers
+
     [Header("Items")]
     public int GrapplingHooks = 0; // Number of grappling hooks (Charges?) the player has
     public int Bombs = 0; // Number of bombs the player has
