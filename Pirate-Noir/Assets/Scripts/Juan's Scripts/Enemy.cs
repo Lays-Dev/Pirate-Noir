@@ -38,8 +38,8 @@ public class Enemy : MonoBehaviour
     
     [Header("Distance Check")]
     private float Distance; // to optimize distance checking
-    private float AttackPhaseSqrRange; // squared range for attack phase
-    private float FarSqrRange; // squared range for far range
+    public float AttackPhaseSqrRange; // squared range for attack phase
+    public float FarSqrRange; // squared range for far range
     public float DetectRange = 8f; // the range from which the enemy will detect and attack the player.
     public float FarRange = 15f;
     public float AttackPhaseRange = 5f;
@@ -75,7 +75,7 @@ public class Enemy : MonoBehaviour
 
     #region Start and Update
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public virtual void Start()
     {
         Sword.SetActive(false); // sword is disabled at the start, will be enabled when attacking, this will probably change in later versions
         
