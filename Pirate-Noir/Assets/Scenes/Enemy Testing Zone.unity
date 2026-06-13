@@ -243,7 +243,6 @@ GameObject:
   - component: {fileID: 124383996}
   - component: {fileID: 124383995}
   - component: {fileID: 124383994}
-  - component: {fileID: 124383999}
   - component: {fileID: 124384000}
   m_Layer: 11
   m_Name: Sword
@@ -359,33 +358,6 @@ Transform:
   - {fileID: 1875624758}
   m_Father: {fileID: 915037564}
   m_LocalEulerAnglesHint: {x: 0, y: -4.38, z: 0}
---- !u!54 &124383999
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 124383993}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &124384000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,7 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d79cbf8d48a5bd4d9d54ffa15823f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  speed: 10
+  speed: 30
 --- !u!1 &167328251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,7 +1649,7 @@ MonoBehaviour:
   Attack: {fileID: 124383998}
   Sword: {fileID: 124383993}
   attackCooldown: 2
-  AttackDuration: 3
+  AttackDuration: 1
   AttackPhaseSqrRange: 0
   FarSqrRange: 0
   DetectRange: 10

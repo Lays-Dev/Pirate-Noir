@@ -52,20 +52,44 @@ public class RangedEnemy : Enemy
 
         // making enemy face the player when attacking
         Vector3 AttackDirection = (playerPosition - enPosition).normalized; // get the direction from the enemy to the player
+        AttackDirection.y = 0; // we aren't trying to make the enemy go up
         Vector3 LookDirection = playerPosition - enPosition; // get the direction from the enemy to the player for looking at the player
         LookDirection.y = 0; // we aren't trying to make the enemy go up
         Quaternion quaternion = Quaternion.LookRotation(LookDirection);
 
-        //The projectile
-        GameObject projectile = GetPooledProjectile(); 
-        if(projectile != null)
-        {
-            projectile.transform.position = transform.position + AttackDirection; // spawn the projectile in front of the enemy, this will probably change in later versions
-            projectile.transform.rotation = quaternion; // make the projectile face the player, this will probably change in later versions
-            projectile.SetActive(true); // activate the projectile, this will probably change in later versions
+        int projectileChance = Random.Range(0, 100); // determine how many projectiles to shoot, this will probably change in later versions
+        int projectileCount;
 
-            projectile.GetComponent<Projectile>().Launch(AttackDirection); // launch the projectile in the direction of the player, this will probably change in later versions
+        if(projectileChance < 33) // determines how many projectiles will be launched
+        {
+            projectileCount = 1;
         }
+        else if(projectileChance < 66)
+        {
+            projectileCount = 2;
+        }
+        else
+        {
+            projectileCount = 3;
+        }
+
+        GameObject projectile = GetPooledProjectile(); 
+
+        for(int i = 0; i < projectileCount; i++)
+        {
+            transform.rotation = quaternion;
+            //The projectile
+            //GameObject projectile = GetPooledProjectile(); 
+            if(projectile != null)
+            {
+                projectile.transform.position = transform.position + AttackDirection; // spawn the projectile in front of the enemy, this will probably change in later versions
+                projectile.transform.rotation = quaternion; // make the projectile face the player, this will probably change in later versions
+                projectile.SetActive(true); // activate the projectile, this will probably change in later versions
+
+                projectile.GetComponent<Projectile>().Launch(AttackDirection); // launch the projectile in the direction of the player, this will probably change in later versions
+            }
+        }
+        
 
         //Shoot();
 
@@ -104,7 +128,7 @@ public class RangedEnemy : Enemy
             var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
 
             float strafeDashTime = 0.3f; // determines how long the dash is.
-            Debug.Log(StrafeDirection);
+            
 
             while(strafeDashTime > 0)
             {
@@ -122,8 +146,8 @@ public class RangedEnemy : Enemy
                 yield return null;
             }
 
+            AttackPlayer();
             agent.velocity = Vector3.zero; // stop the enemy after the dash is done
-            //AttackPlayer();
             yield return new WaitForSeconds(0.2f); 
 
         }
@@ -148,7 +172,7 @@ public class RangedEnemy : Enemy
             var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
 
             float strafeDashTime = 0.3f; // determines how long the dash is.
-            Debug.Log(StrafeDirection);
+            
 
             while(strafeDashTime > 0)
             {
@@ -165,9 +189,9 @@ public class RangedEnemy : Enemy
                 strafeDashTime -= Time.deltaTime;
                 yield return null;
             }
-
+            
+            AttackPlayer();
             agent.velocity = Vector3.zero; // stop the enemy after the dash is done
-            //AttackPlayer();
             yield return new WaitForSeconds(0.2f); // wait for the next frame before continuing the loop
 
         }
