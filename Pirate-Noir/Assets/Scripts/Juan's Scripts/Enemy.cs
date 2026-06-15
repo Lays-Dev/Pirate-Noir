@@ -506,7 +506,7 @@ public class Enemy : MonoBehaviour
         
     }
 
-    public void ImmediateAction()
+    public virtual void ImmediateAction()
     {
         int choice = Random.Range(0, 100);
         

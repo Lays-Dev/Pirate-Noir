@@ -3,9 +3,9 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public float speed = 10f; // speed of the projectile, this will probably change in later versions
-    private Vector3 moveDirection; // direction of the projectile, this will probably change in later versions
+    public Vector3 moveDirection; // direction of the projectile, this will probably change in later versions
 
-    public void Launch(Vector3 direction)
+    public virtual void Launch(Vector3 direction)
     {
         moveDirection = direction.normalized;
     }
@@ -18,7 +18,7 @@ public class Projectile : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         transform.position += moveDirection * speed * Time.deltaTime;
     }
