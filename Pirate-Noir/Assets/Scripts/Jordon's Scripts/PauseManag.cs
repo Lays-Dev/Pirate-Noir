@@ -90,14 +90,9 @@ public class PauseManagement : MonoBehaviour
         PauseUI = GameObject.Find("PauseUI"); // Get the PauseUI Gameobject component 
         SettingsUI = GameObject.Find("Settings"); // Get the Settings Gameobject component 
 
-        if (Movement != null)
-        {
-            Movement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>(); // Get the PlayerMovement component from the player Gameobject ~F
-        }
-        else
-        {
-            Debug.LogWarning("movement is not presentin this scene");
-        }
+        
+        Movement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>(); // Get the PlayerMovement component from the player Gameobject ~F
+        
 
         GameObject canvgroup = GameObject.Find("PauseMenu"); // Get the canvas group from the gameobject PauseMenu 
         if (canvgroup != null) canvasGroup = canvgroup.GetComponent<CanvasGroup>();
