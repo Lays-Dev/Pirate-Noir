@@ -16,6 +16,8 @@ public class PauseManagement : MonoBehaviour
     #region === Ui Transition Pieces ===
     [Header("Pause Ui Fade in & out")]
     public CanvasGroup canvasGroup; //this will be used to fade in and fade out the pause ui
+    public CanvasGroup HealthcanvasGroup; //this will be used to fade in and fade out the pause ui
+
     public float fadeDuration = 0.3f; // How many seconds the fade takes
     #endregion
 
@@ -85,6 +87,8 @@ public class PauseManagement : MonoBehaviour
         GameObject canvgroup = GameObject.Find("PauseMenu"); // Get the canvas group from the gameobject PauseMenu 
         if (canvgroup != null) canvasGroup = canvgroup.GetComponent<CanvasGroup>();
 
+        GameObject healcanvGroup = GameObject.Find("HealthBarParent"); // Get the canvas group from the gameobject PauseMenu 
+        if (healcanvGroup != null) HealthcanvasGroup = healcanvGroup.GetComponent<CanvasGroup>();
 
         GameObject TopImg = GameObject.Find("Top"); // Get the Top Image Rect component from the gameobject Top
         if (TopImg != null) TopImage = TopImg.GetComponent<RectTransform>(); // check if its there
@@ -141,6 +145,8 @@ public class PauseManagement : MonoBehaviour
         //move the images from the closed position to the open position for the pause area 
         //Check if images are there and make the text and buttons appear
         
+        HealthcanvasGroup.alpha = 0;
+
         Cursor.lockState = CursorLockMode.None; //unlock cursor so the player can click on the buttons
         Cursor.visible = true;
 
@@ -152,7 +158,7 @@ public class PauseManagement : MonoBehaviour
         StartCoroutine(MoveBottom());
         
         GameIsPaused = true;
-
+        
         
         
     }
@@ -175,8 +181,9 @@ public class PauseManagement : MonoBehaviour
 
         GameIsPaused = false;
 
+
         StartCoroutine(FadeOut());
-        
+        HealthcanvasGroup.alpha = 1;
     }
     public void Options()
     {
@@ -240,6 +247,7 @@ public class PauseManagement : MonoBehaviour
         if (canvasGroup.alpha == 1f)
         {
             canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
         }
     }
     private IEnumerator FadeOut()
@@ -270,6 +278,7 @@ public class PauseManagement : MonoBehaviour
         if (canvasGroup.alpha == 0f)
         {
             canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
         }
     }
     private IEnumerator MoveTop()

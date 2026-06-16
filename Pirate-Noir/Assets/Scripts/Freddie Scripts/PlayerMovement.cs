@@ -62,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
     #region === UI ===
     [Header("UI")]
     public PauseManagement PauseManag;
+    public WinEndManag WinEndManag;
     
 
     #endregion
@@ -73,6 +74,8 @@ public class PlayerMovement : MonoBehaviour
         RB = GetComponent<Rigidbody>(); // Get the Rigidbody component
 
         PauseManag = Object.FindAnyObjectByType<PauseManagement>(); // Get the PauseManagement component
+
+        WinEndManag = Object.FindAnyObjectByType<WinEndManag>(); // Get the WinEndManagement component
 
         RB.freezeRotation = true; // Prevent the Rigidbody from rotating due to physics
 
