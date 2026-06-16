@@ -12,6 +12,10 @@ public class PauseManagement : MonoBehaviour
     public bool GameIsPaused = false;
     public bool InSettings = false;
     public string SceneToLoad;
+
+    #region === Player Movement ===]
+    public PlayerMovement Movement; // Reference to the PlayerMovement component ~F
+    #endregion
     
     #region === Ui Transition Pieces ===
     [Header("Pause Ui Fade in & out")]
@@ -82,7 +86,7 @@ public class PauseManagement : MonoBehaviour
         PauseUI = GameObject.Find("PauseUI"); // Get the PauseUI Gameobject component 
         SettingsUI = GameObject.Find("Settings"); // Get the Settings Gameobject component 
 
-
+        Movement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>(); // Get the PlayerMovement component from the player Gameobject ~F
 
         GameObject canvgroup = GameObject.Find("PauseMenu"); // Get the canvas group from the gameobject PauseMenu 
         if (canvgroup != null) canvasGroup = canvgroup.GetComponent<CanvasGroup>();
@@ -158,6 +162,7 @@ public class PauseManagement : MonoBehaviour
         StartCoroutine(MoveBottom());
         
         GameIsPaused = true;
+        Movement.CanMove = false;  //Don't allow the player to move when they pause the game ~F
         
         
         
@@ -184,6 +189,7 @@ public class PauseManagement : MonoBehaviour
 
         StartCoroutine(FadeOut());
         HealthcanvasGroup.alpha = 1;
+        Movement.CanMove = true;  //allow the player to move again when they unpause the game ~F
     }
     public void Options()
     {

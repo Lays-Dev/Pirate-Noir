@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public bool CanSprint; // Whether the player can sprint based on input and stamina
     private bool SprintDrain; // Whether the player is currently draining stamina from sprinting
     public float CurrentSpeed; // Current movement speed based on sprinting state
+    public bool CanMove = true; // Whether the player can move (e.g., not stunned or in a cutscene)
 
 
     public Vector2 MoveInput; // Raw movement input from player
@@ -101,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
     public void OnJump(InputAction.CallbackContext Context) // Called when jump input occurs
     {
         Debug.Log("Jump input received"); // Log jump input for debugging
-        if (Context.started && IsGrounded) // Only jump if grounded
+        if (Context.started && IsGrounded && CanMove) // Only jump if grounded and can move
         {
             VerticalY = Mathf.Sqrt(JumpForce * -2f * Gravity); // Calculate jump velocity
 
@@ -125,6 +126,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void Movement()
     {
+        if (!CanMove) return; // Don't process movement if player can't move
         CanSprint = IsSprinting && MoveInput.magnitude > 0 && Stats.CurrentStamina > StaminaDrainRate; // Player can sprint if sprinting, has movement input, and enough stamina to drain
         CurrentSpeed = CanSprint ? Stats.SprintSpeed : Stats.MoveSpeed; // Use modified speeds from stats
         
@@ -135,7 +137,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleStamina()
     {
-        
+        if (!CanMove) return; // Don't process movement if player can't move
         SprintDrain = IsSprinting && MoveInput.magnitude > 0 && Stats.CurrentStamina > 0f; // Evaluate if the player is actively burning stamina right now
 
         if (SprintDrain)
@@ -193,7 +195,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnInteract(InputAction.CallbackContext Context)
     {
-        if (Context.started) // Only check for interactables when the interact button is initially pressed
+        if (Context.started && CanMove) // Only check for interactables when the interact button is initially pressed
         {
             Debug.Log("Interact button pressed, checking for interactables...");
             
@@ -214,7 +216,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext Context)
     {
-        if (Context.started) // Only check for Enemies when the attack button is initially pressed
+        if (Context.started && CanMove) // Only check for Enemies when the attack button is initially pressed
         {
             Debug.Log("Attack button pressed, checking for Enemies...");
             
@@ -229,6 +231,10 @@ public class PlayerMovement : MonoBehaviour
                     Interactable.Interact(); // Call the Interact method on the interactable object
                     Debug.Log($"Attacked {hit.collider.name}"); // Log the name of the Attacked object for debugging
                 }
+            }
+            if (Anim != null) // Ensure animator exists
+            {
+                Anim.SetTrigger("Attack"); // Trigger attack animation
             }
         }
     }
@@ -245,8 +251,9 @@ public class PlayerMovement : MonoBehaviour
         float CurrentAnimSpeed = MoveInput.magnitude; // Base movement animation speed
 
         if (IsSprinting && CanSprint && CurrentAnimSpeed > 0) // Check if sprinting while moving
+        {
             CurrentAnimSpeed = 2f; // Increase animation speed for sprinting
-
+        }
         Anim.SetFloat("Speed", CurrentAnimSpeed, 0.1f, Time.deltaTime); // Smoothly update movement speed parameter
 
         Anim.SetBool("IsGrounded", IsGrounded); // Update grounded state parameter
