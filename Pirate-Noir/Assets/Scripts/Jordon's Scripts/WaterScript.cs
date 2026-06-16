@@ -4,8 +4,8 @@ public class WaterScript : MonoBehaviour
 {
     
         public string playerTag = "Player";
-    public float PainDelay = 1f; //how often the player loses health
-    public float PainAmount = 12.5f; //how much health the player loses each time they take damage from the water, this will probably change in later versions
+    public float PainDelay = 0.2f; //how often the player loses health
+    public float PainAmount = 25f; //how much health the player loses each time they take damage from the water, this will probably change in later versions
     public PlayerStats playerStats; // reference to the player's stats script to modify health
     private float damageTimer;
 

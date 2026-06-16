@@ -11,6 +11,10 @@ public class StaminaBarUI : MonoBehaviour
     public PauseManagement PauseManag; // Reference to the PauseManagement component to check if the game is paused
     public float fadeSpeed = 5f; // How long it takes for the sprint bar to fade in and out
 
+    [Header("Stamina Bar fade in and out for menus")]
+    public float fadeDuration = 0.3f; // How many seconds the fade takes
+    private bool isMenuFading = false;
+
 
     [Header("Transparency")]
     public CanvasGroup vis; //to turn off and on depending 
@@ -46,12 +50,72 @@ public class StaminaBarUI : MonoBehaviour
         }
 
 
-        float targetAlpha = (playerStats.CurrentStamina < playerStats.MaxStamina && PauseManag.GameIsPaused == false) ? 1f : 0f;
-
-        // The ui will appear with a smoothing effect depending on the targetalpha
-        vis.alpha = Mathf.MoveTowards(vis.alpha, targetAlpha, fadeSpeed * Time.unscaledDeltaTime);
+        if (!isMenuFading)
+        {
+            float targetAlpha = (playerStats.CurrentStamina < playerStats.MaxStamina && PauseManag.GameIsPaused == false) ? 1f : 0f;
+            vis.alpha = Mathf.MoveTowards(vis.alpha, targetAlpha, fadeSpeed * Time.unscaledDeltaTime);
+        }
     }
 
+    public IEnumerator FadeInSprint()
+    {
+        isMenuFading = true;
+        float elapsedTime = 0f;
+        float startOpacity = vis.alpha; // Where are we starting from? (will be 0 here)
+        float targetOpacity = 1f;               // Desired value
+
+        // Keep looping as long as we haven't reached our target duration
+        while (elapsedTime < fadeDuration)
+        {
+            // Add the time passed since the last frame to see if its passed the cooldown
+            elapsedTime += Time.unscaledDeltaTime;
+
+            // Calculate our progress percentage (between 0.0 and 1.0)
+            float percentage = elapsedTime / fadeDuration;
+
+            // Set the opacity based on that progress
+            vis.alpha = Mathf.Lerp(startOpacity, targetOpacity, percentage);
+
+            // Wait for the very next frame before continuing the loop
+            yield return null;
+        }
+
+        // This is to make sure it doesn't do any fancy decimils and is a perfect int at the end of the fade
+        vis.alpha = targetOpacity;
+
+        isMenuFading = false;
+
+    }
+    public IEnumerator FadeOutSprint()
+    {
+        isMenuFading = true;
+        
+        float elapsedTime = 0f;
+        float startOpacity = vis.alpha; // Where are we starting from? (will be 0 here)
+        float targetOpacity = 0f;               // Desired value
+
+        // Keep looping as long as we haven't reached our target duration
+        while (elapsedTime < fadeDuration)
+        {
+            // Add the time passed since the last frame to see if its passed the cooldown
+            elapsedTime += Time.unscaledDeltaTime;
+
+            // Calculate our progress percentage (between 0.0 and 1.0)
+            float percentage = elapsedTime / fadeDuration;
+
+            // Set the opacity based on that progress
+            vis.alpha = Mathf.Lerp(startOpacity, targetOpacity, percentage);
+
+            // Wait for the very next frame before continuing the loop
+            yield return null;
+        };
+
+        // This is to make sure it doesn't do any fancy decimils and is a perfect int at the end of the fade
+        vis.alpha = targetOpacity;
+
+        isMenuFading = false;
+        
+    }
 
 
 }

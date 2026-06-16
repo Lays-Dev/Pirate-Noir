@@ -15,6 +15,9 @@ public class WinEndManag : MonoBehaviour
     public PlayerStats playerStats;
     public PauseManagement PauseManagement;
     public StaminaBarUI stambar;
+    public PlayerMovement Movement; // Reference to the PlayerMovement component ~F
+    public HealthBar healthbar; // Reference to the HealthBar component ~F
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,11 +28,15 @@ public class WinEndManag : MonoBehaviour
 
         stambar = Object.FindAnyObjectByType<StaminaBarUI>(); // reference to the player's stats script to modify health
 
+        Movement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>(); // Get the PlayerMovement component from the player Gameobject ~F
+
+        healthbar = Object.FindAnyObjectByType<HealthBar>(); // reference to the player's stats script to modify health
+
 
         GameObject loseUI = GameObject.Find("LoseUI"); // Get the Top Image Rect component from the gameobject Top
 
         GameObject TopImg = GameObject.Find("Top"); // Get the Top Image Rect component from the gameobject Top
-
+        
         
     }
 
@@ -39,18 +46,26 @@ public class WinEndManag : MonoBehaviour
         if (playerStats.CurrentHealth <= 0)
         {
             LoseGameFunc();
-            
         }
     }
 
+
     public void WinGameFunc()
     {
+        PauseManagement.SetBGMVolume(0f);
+        PauseManagement.SetSFXVolume(0f);
+        
+        Movement.CanMove = false;
         EndGameState = true;
         PauseManagement.HealthcanvasGroup.alpha = 0;
         stambar.vis.alpha = 0;
+        
+        stambar.FadeOutSprint();
+        healthbar.FadeOutHealth();
+
         Cursor.lockState = CursorLockMode.None; //unlock cursor so the player can click on the buttons
         Cursor.visible = true;
-
+        
 
         StartCoroutine(FadeInWin());
         Time.timeScale = 0f;
@@ -63,12 +78,19 @@ public class WinEndManag : MonoBehaviour
 
     public void LoseGameFunc()
     {
+        PauseManagement.SetBGMVolume(0f);
+        PauseManagement.SetSFXVolume(0f);
+
         EndGameState = true;
         PauseManagement.HealthcanvasGroup.alpha = 0;
         stambar.vis.alpha = 0;
 
+        stambar.FadeOutSprint();
+        healthbar.FadeOutHealth();
+
         Cursor.lockState = CursorLockMode.None; //unlock cursor so the player can click on the buttons
         Cursor.visible = true;
+        Movement.CanMove = false;
 
         StartCoroutine(FadeInLose());
         Time.timeScale = 0f;
@@ -145,6 +167,8 @@ public class WinEndManag : MonoBehaviour
 
     public void Restart()
     {
+        PauseManagement.SaveSoundSettings();
+
         Time.timeScale = 1f;
         Scene currentScene = SceneManager.GetActiveScene();
 
@@ -153,8 +177,18 @@ public class WinEndManag : MonoBehaviour
     }
     public void MainMenu()
     {
+        PauseManagement.SaveSoundSettings();
+
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void Credits()
+    {
+        PauseManagement.SaveSoundSettings();
+
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Credits");
     }
 
 }
