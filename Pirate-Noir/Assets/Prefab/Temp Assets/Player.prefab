@@ -595,6 +595,7 @@ GameObject:
   - component: {fileID: 1821935296183417215}
   - component: {fileID: 6215199485398367537}
   - component: {fileID: 4632178226081566010}
+  - component: {fileID: 1863053097020222024}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -639,6 +640,10 @@ MonoBehaviour:
   MaxHealth: 100
   CurrentStamina: 100
   MaxStamina: 100
+  BaseAttackPower: 10
+  AttackMultiplier: 1
+  AttackRange: 3
+  AttackCooldown: 1
   GrapplingHooks: 0
   Bombs: 0
   Keys: 0
@@ -661,6 +666,7 @@ MonoBehaviour:
   IsSprinting: 0
   CanSprint: 0
   CurrentSpeed: 0
+  CanMove: 1
   MoveInput: {x: 0, y: 0}
   VerticalY: 0
   StaminaDrainRate: 20
@@ -670,15 +676,24 @@ MonoBehaviour:
   Gravity: -25
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 200
+    m_Bits: 4294967295
   GroundCheckRadius: 0.3
   GroundCheckOffset: 0.25
   InteractRange: 3
   InteractableLayer:
     serializedVersion: 2
     m_Bits: 1024
+  AttackableLayer:
+    serializedVersion: 2
+    m_Bits: 512
   Anim: {fileID: 6712140846911845181}
+  PlayerAudio: {fileID: 1863053097020222024}
+  FootstepClip: {fileID: 8300000, guid: 85665ab9aea151248a0ac50c30dcf251, type: 3}
+  RunningFootstepClip: {fileID: 8300000, guid: 34c8376e62ee857429f1b1789d4dc9e5, type: 3}
+  JumpClip: {fileID: 8300000, guid: faeda261e1d969c499555dd534da431c, type: 3}
+  AttackClip: {fileID: 8300000, guid: a2123801f831b594e92f547d0f5a0899, type: 3}
   PauseManag: {fileID: 0}
+  WinEndManag: {fileID: 0}
 --- !u!136 &1821935296183417215
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -787,7 +802,19 @@ MonoBehaviour:
     m_ActionId: 6b444451-8a00-4d00-a97e-f47457f736a8
     m_ActionName: 'Player/Look[/Mouse/delta]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6685528757163221336}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
     m_ActionId: 6c2ab1b8-8984-453a-af3d-a3c78ae1679a
     m_ActionName: 'Player/Attack[/Mouse/leftButton,/Keyboard/enter]'
   - m_PersistentCalls:
@@ -923,6 +950,103 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!82 &1863053097020222024
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2393370093522370787}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 3981213157255191859, guid: 941b5775e5bcfb84bbe072bc6da52974, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2743417721344866559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,10 +1409,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraMovement
   SensX: 0.3
   SensY: 0.3
+  ControllerSensX: 500
+  ControllerSensY: 500
+  IsUsingGamepad: 0
+  LookInput: {x: 0, y: 0}
+  deltaX: 0
+  deltaY: 0
   Orientation: {fileID: 3612770871091723636}
   MouseX: 0
   MouseY: 0
-  PauseManagement: {fileID: 0}
+  Movement: {fileID: 0}
 --- !u!1 &4307462487536543460
 GameObject:
   m_ObjectHideFlags: 0

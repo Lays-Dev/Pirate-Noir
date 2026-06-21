@@ -60,6 +60,15 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region === Audio ===
+    [Header("Audio")]
+    public AudioSource PlayerAudio; // AudioSource for sounds
+    public AudioClip FootstepClip; // Footstep sound clip
+    public AudioClip RunningFootstepClip; // Running footstep sound clip
+    public AudioClip JumpClip; // Jump sound clip
+    public AudioClip AttackClip; // Attack sound clip
+    #endregion
+
     #region === UI ===
     [Header("UI")]
     public PauseManagement PauseManag;
@@ -109,6 +118,10 @@ public class PlayerMovement : MonoBehaviour
             if (Anim != null) // Ensure animator exists
             {
                 Anim.SetTrigger("Jump"); // Trigger jump animation
+            }
+            if (PlayerAudio != null && JumpClip != null) // Ensure audio source and clip exist
+            {
+                AudioSource.PlayClipAtPoint(JumpClip, transform.position); // Play jump sound effect
             }
         }
     }
@@ -216,7 +229,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext Context)
     {
-        if (Context.started && CanMove) // Only check for Enemies when the attack button is initially pressed
+        if (Context.performed && CanMove) // Only check for Enemies when the attack button is initially pressed
         {
             Debug.Log("Attack button pressed, checking for Enemies...");
             
@@ -235,6 +248,11 @@ public class PlayerMovement : MonoBehaviour
             if (Anim != null) // Ensure animator exists
             {
                 Anim.SetTrigger("Attack"); // Trigger attack animation
+            }
+
+            if (PlayerAudio != null && AttackClip != null) // Ensure audio source and clip exist
+            {
+                AudioSource.PlayClipAtPoint(AttackClip, transform.position); // Play attack sound effect
             }
         }
     }
@@ -263,6 +281,36 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region === Movement Audio ===
+    // Plays movement audio based on player state.
+    private void HandleFootstepAudio()
+    {
+        if (PlayerAudio == null) return; 
+
+        
+        if (RB.linearVelocity.magnitude > 0.1f && IsGrounded)  // Check if the player is actually moving and on the ground
+        {
+            
+            AudioClip targetClip = CanSprint ? RunningFootstepClip : FootstepClip;  // Choose the correct clip based on whether they are sprinting
+
+            
+            if (PlayerAudio.clip != targetClip || !PlayerAudio.isPlaying)  // Only change/play if the clip isn't already playing
+            {
+                PlayerAudio.clip = targetClip;
+                PlayerAudio.loop = true;
+                PlayerAudio.Play();
+            }
+        }
+        else // If they aren't moving or are airborne, stop all footstep sounds
+        {
+            if (PlayerAudio.isPlaying)
+            {
+                PlayerAudio.Stop();
+            }
+        }
+    }
+    #endregion
+
     private void FixedUpdate()
     {
         Movement(); // Call the movement method in FixedUpdate for consistent physics updates
@@ -270,6 +318,7 @@ public class PlayerMovement : MonoBehaviour
         ApplyGravity(); // Apply custom gravity to the player
         UpdateAnimations(); // Update animator parameters based on current state
         HandleStamina(); // Manage stamina drain and regeneration
+        HandleFootstepAudio(); // Manage footstep audio based on movement and grounded state
     }
 
     private void OnDrawGizmosSelected()
