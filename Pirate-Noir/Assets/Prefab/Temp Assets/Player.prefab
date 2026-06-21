@@ -676,7 +676,7 @@ MonoBehaviour:
   Gravity: -25
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 3839
   GroundCheckRadius: 0.3
   GroundCheckOffset: 0.25
   InteractRange: 3
