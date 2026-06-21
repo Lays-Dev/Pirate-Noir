@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
 
     #region Variables
     public float health;
+    public float maxHealth;
     public int damage;
     public float speed; // When enemy gets close, speed will slow it down.
     // will put more settings later to customize speed in different phases, for now just the attack will change the speed.
@@ -30,7 +31,6 @@ public class Enemy : MonoBehaviour
     public float AttackDuration = 1f;
     //In future versions the animator will play a role, for now this will do.
 
-    
 
     /*public Animator animator; // to play attack animations, will be used in later versions
     public bool isAttacking = false; // to prevent the enemy from attacking multiple times in a row without cooldown, will be used in later versions*/
@@ -69,6 +69,7 @@ public class Enemy : MonoBehaviour
     public Quaternion rotation;
     public float strafeSpeed = 4f;
 
+    public EnemyWaves enemyWaves;
     public EnemyState currentState; // to determine the current state of the enemy, will be used in later versions to make the enemy do different things based on the state.
     #endregion
 
@@ -77,6 +78,7 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
+        maxHealth = health;
         Sword.SetActive(false); // sword is disabled at the start, will be enabled when attacking, this will probably change in later versions
         
         AttackPhaseSqrRange = AttackPhaseRange * AttackPhaseRange;
@@ -147,7 +149,7 @@ public class Enemy : MonoBehaviour
                 }
                 
 
-                break;
+            break;
             
         }
 
@@ -163,7 +165,10 @@ public class Enemy : MonoBehaviour
             
         }
         
-        
+        if (health <= 0f)
+        {
+            EnemyDied();
+        }
 
     }
     #endregion
@@ -263,6 +268,22 @@ public class Enemy : MonoBehaviour
 
         // No behavior choice here, I want the player to either lose the enemy or have him get close and reaching attack phase.
     }
+
+    public void EnemyDied()
+    {
+        enemyWaves.ActiveEnemies--;
+        StopAllCoroutines();
+        if(enemyWaves.ActiveEnemies < 0)
+        {
+            enemyWaves.ActiveEnemies = 0;
+        }
+        
+        //Should I set it active or destroy the gameObject?
+        health = maxHealth;
+
+        this.gameObject.SetActive(false);
+        
+    }
     #endregion
 
     #region AttackCode
@@ -323,6 +344,8 @@ public class Enemy : MonoBehaviour
 
         // Sword.SetActive(true); // will make a function later to make the player be detected after entering a certain range, making the sword spawn in.
     }
+
+
     #endregion
 
     #region StrafeCode
@@ -537,6 +560,17 @@ public class Enemy : MonoBehaviour
             }
             */
         }
+    }
+
+    void OnEnable()
+    {
+        currentState = EnemyState.Idle;
+        IsDoingAction = false;
+        ChoosingBehavior = false;
+        AttackPhase = false;
+
+        agent.ResetPath();
+        agent.isStopped = false;
     }
 
     #endregion
