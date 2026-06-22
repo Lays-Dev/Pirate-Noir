@@ -829,7 +829,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1175410985}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseManagement, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
@@ -1042,7 +1042,6 @@ GameObject:
   - component: {fileID: 1175410980}
   - component: {fileID: 1175410979}
   - component: {fileID: 1175410984}
-  - component: {fileID: 1175410985}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1152,37 +1151,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ab76419b2df6545829c6e677a29253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuMan
---- !u!114 &1175410985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1175410978}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12d85085fe11b9f4196cafdde24c2819, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PauseManagement
-  GameIsPaused: 0
-  InSettings: 0
-  SceneToLoad: 
-  canvasGroup: {fileID: 0}
-  fadeDuration: 0.3
-  TopImage: {fileID: 0}
-  BottomImage: {fileID: 0}
-  TOTPH: 223
-  TOBPH: -223
-  TCTPH: 56
-  TCBPH: -56
-  TTSH: 300
-  TBSH: 300
-  PauseUI: {fileID: 0}
-  SettingsUI: {fileID: 0}
-  masterVolumeSlider: {fileID: 0}
-  musicVolumeSlider: {fileID: 0}
-  sfxSlider: {fileID: 0}
-  audioMixer: {fileID: 24100000, guid: 941b5775e5bcfb84bbe072bc6da52974, type: 2}
 --- !u!1 &1413007472
 GameObject:
   m_ObjectHideFlags: 0

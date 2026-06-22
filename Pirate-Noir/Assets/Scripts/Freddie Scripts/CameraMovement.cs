@@ -13,28 +13,30 @@ public class CameraMovement : MonoBehaviour
 
     private float xRotation; // Cumulative vertical rotation value
 
-    public PauseManagement PauseManagement; // Reference to the PauseManagement script
+
+    #region === Player Movement ===]
+    public PlayerMovement Movement; // Reference to the PlayerMovement component ~F
+    #endregion
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the center of the screen
         Cursor.visible = false; // Hide the cursor
         
-        PauseManagement = Object.FindAnyObjectByType<PauseManagement>(); // Get the PauseManagement component
+        Movement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>(); // Get the PlayerMovement component from the player Gameobject ~F
 
     }
 
     public void OnLook(InputAction.CallbackContext Context)
     {
-        // if (PauseManagement != null) (to fix it not being there)
         
-            if (PauseManagement != null)
-            {
-                if (PauseManagement.GameIsPaused) 
-                {
-                    return;
-                }
-            }
+        
+        if (!Movement.CanMove) // Check if the player can move
+        {
+            return; // If the player cannot move, exit the method
+        }
+        
+        
         
         
 

@@ -12,10 +12,20 @@ public class PauseManagement : MonoBehaviour
     public bool GameIsPaused = false;
     public bool InSettings = false;
     public string SceneToLoad;
+
+    #region === Player Movement ===]
+    public PlayerMovement Movement; // Reference to the PlayerMovement component ~F
+    #endregion
     
     #region === Ui Transition Pieces ===
     [Header("Pause Ui Fade in & out")]
     public CanvasGroup canvasGroup; //this will be used to fade in and fade out the pause ui
+    public CanvasGroup HealthcanvasGroup; //this will be used to fade in and fade out the pause ui
+
+    public StaminaBarUI stambar;
+    public HealthBar healthbar; // Reference to the HealthBar component ~F
+
+
     public float fadeDuration = 0.3f; // How many seconds the fade takes
     #endregion
 
@@ -80,11 +90,15 @@ public class PauseManagement : MonoBehaviour
         PauseUI = GameObject.Find("PauseUI"); // Get the PauseUI Gameobject component 
         SettingsUI = GameObject.Find("Settings"); // Get the Settings Gameobject component 
 
-
+        
+        Movement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>(); // Get the PlayerMovement component from the player Gameobject ~F
+        
 
         GameObject canvgroup = GameObject.Find("PauseMenu"); // Get the canvas group from the gameobject PauseMenu 
         if (canvgroup != null) canvasGroup = canvgroup.GetComponent<CanvasGroup>();
 
+        GameObject healcanvGroup = GameObject.Find("HealthBarParent"); // Get the canvas group from the gameobject PauseMenu 
+        if (healcanvGroup != null) HealthcanvasGroup = healcanvGroup.GetComponent<CanvasGroup>();
 
         GameObject TopImg = GameObject.Find("Top"); // Get the Top Image Rect component from the gameobject Top
         if (TopImg != null) TopImage = TopImg.GetComponent<RectTransform>(); // check if its there
@@ -100,6 +114,11 @@ public class PauseManagement : MonoBehaviour
         
         GameObject sfx = GameObject.Find("SFX Volume"); // Get the SFX Slider component 
         if (sfx != null) sfxSlider = sfx.GetComponent<Slider>(); // check if its there
+
+        stambar = Object.FindAnyObjectByType<StaminaBarUI>(); // reference to the player's stats script to modify health
+
+        healthbar = Object.FindAnyObjectByType<HealthBar>(); // reference to the player's stats script to modify health
+
 
         if (PauseUI != null) PauseUI.SetActive(false);
         if (SettingsUI != null) SettingsUI.SetActive(false);
@@ -140,7 +159,13 @@ public class PauseManagement : MonoBehaviour
         //transition to turn on opacity and allow the ui to appear for the pause area
         //move the images from the closed position to the open position for the pause area 
         //Check if images are there and make the text and buttons appear
+
+        SetBGMVolume(0f);
+        SetSFXVolume(0f);
         
+        StartCoroutine(stambar.FadeOutSprint());
+        StartCoroutine(healthbar.FadeOutHealth());
+
         Cursor.lockState = CursorLockMode.None; //unlock cursor so the player can click on the buttons
         Cursor.visible = true;
 
@@ -152,7 +177,7 @@ public class PauseManagement : MonoBehaviour
         StartCoroutine(MoveBottom());
         
         GameIsPaused = true;
-
+        Movement.CanMove = false;  //Don't allow the player to move when they pause the game ~F
         
         
     }
@@ -162,6 +187,9 @@ public class PauseManagement : MonoBehaviour
         //Make the text and buttons dissappear
         //move the images from the open position to the closed position for the pause area 
         //transition to turn off opacity and make the ui dissappear for the pause area
+
+        SetBGMVolume(musicVolume);
+        SetSFXVolume(sfxVolume);
 
         Cursor.lockState = CursorLockMode.Locked; //unlock cursor so the player can click on the buttons
         Cursor.visible = false;
@@ -175,8 +203,17 @@ public class PauseManagement : MonoBehaviour
 
         GameIsPaused = false;
 
+
         StartCoroutine(FadeOut());
-        
+
+
+        StartCoroutine(healthbar.FadeInHealth());
+
+        Movement.CanMove = true;  //allow the player to move again when they unpause the game ~F
+
+
+
+
     }
     public void Options()
     {
@@ -240,6 +277,7 @@ public class PauseManagement : MonoBehaviour
         if (canvasGroup.alpha == 1f)
         {
             canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
         }
     }
     private IEnumerator FadeOut()
@@ -270,8 +308,10 @@ public class PauseManagement : MonoBehaviour
         if (canvasGroup.alpha == 0f)
         {
             canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
         }
     }
+
     private IEnumerator MoveTop()
     {
         if (!InSettings) //deactivate stuff
