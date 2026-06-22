@@ -17,6 +17,7 @@ public class EnemyWaves : MonoBehaviour
     public int ActiveEnemies = 0;
     public int enemiesPerWave = 10;
     public int poolSize = 10;
+    private int nextEnemyIndex = 0;
     
     public GameObject regularEnemy;
     public GameObject rangedEnemy;
@@ -70,9 +71,11 @@ public class EnemyWaves : MonoBehaviour
     {
         for (int i = 0; i < enemyWaves.Count; i++)
         {
-            if (!enemyWaves[i].activeInHierarchy)
+            int index = (nextEnemyIndex + i) % enemyWaves.Count;
+            if (!enemyWaves[index].activeInHierarchy)
             {
-                return enemyWaves[i];
+                nextEnemyIndex = (index + i) % enemyWaves.Count;
+                return enemyWaves[index];
             }
         }
         return null; // if no pooled object is available, return null, this will probably change in later versions
