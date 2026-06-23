@@ -121,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if (PlayerAudio != null && JumpClip != null) // Ensure audio source and clip exist
             {
-                AudioSource.PlayClipAtPoint(JumpClip, transform.position); // Play jump sound effect
+                PlayerAudio.PlayOneShot(JumpClip); // Play jump sound effect
             }
         }
     }
@@ -252,7 +252,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (PlayerAudio != null && AttackClip != null) // Ensure audio source and clip exist
             {
-                AudioSource.PlayClipAtPoint(AttackClip, transform.position); // Play attack sound effect
+                PlayerAudio.PlayOneShot(AttackClip); // Play attack sound effect
             }
         }
     }

@@ -177,6 +177,7 @@ public class PauseManagement : MonoBehaviour
         GameIsPaused = true;
         Movement.CanMove = false;  //Don't allow the player to move when they pause the game ~F
         
+        Movement.PlayerAudio.Stop();
         
     }
 
