@@ -48,6 +48,13 @@ public class CameraMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!Movement.CanMove) // Check if the player can move
+        {
+            deltaX = 0f; // Reset horizontal rotation delta
+            deltaY = 0f; // Reset vertical rotation delta
+            LookInput = Vector2.zero; // Reset look input
+            return; // If the player cannot move, exit the method
+        }
         // Detect if the input is coming from a Gamepad/Controller or a Mouse
         if (IsUsingGamepad)
         {
