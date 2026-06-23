@@ -62,7 +62,8 @@ public class PlayerMovement : MonoBehaviour
 
     #region === Audio ===
     [Header("Audio")]
-    public AudioSource PlayerAudio; // AudioSource for sounds
+    public AudioSource PlayerFootstepAudio; // AudioSource for footstep sounds
+    public AudioSource PlayerActionAudio; // AudioSource for action sounds
     public AudioClip FootstepClip; // Footstep sound clip
     public AudioClip RunningFootstepClip; // Running footstep sound clip
     public AudioClip JumpClip; // Jump sound clip
@@ -119,9 +120,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 Anim.SetTrigger("Jump"); // Trigger jump animation
             }
-            if (PlayerAudio != null && JumpClip != null) // Ensure audio source and clip exist
+            if (PlayerActionAudio != null && JumpClip != null) // Ensure audio source and clip exist
             {
-                PlayerAudio.PlayOneShot(JumpClip); // Play jump sound effect
+                PlayerActionAudio.PlayOneShot(JumpClip); // Play jump sound effect
             }
         }
     }
@@ -250,9 +251,9 @@ public class PlayerMovement : MonoBehaviour
                 Anim.SetTrigger("Attack"); // Trigger attack animation
             }
 
-            if (PlayerAudio != null && AttackClip != null) // Ensure audio source and clip exist
+            if (PlayerActionAudio != null && AttackClip != null) // Ensure audio source and clip exist
             {
-                PlayerAudio.PlayOneShot(AttackClip); // Play attack sound effect
+                PlayerActionAudio.PlayOneShot(AttackClip); // Play attack sound effect
             }
         }
     }
@@ -285,27 +286,27 @@ public class PlayerMovement : MonoBehaviour
     // Plays movement audio based on player state.
     private void HandleFootstepAudio()
     {
-        if (PlayerAudio == null) return; 
+        if (PlayerFootstepAudio == null) return; 
 
-        
+        // MoveInput != Vector2.zero
         if (RB.linearVelocity.magnitude > 0.1f && IsGrounded)  // Check if the player is actually moving and on the ground
         {
             
             AudioClip targetClip = CanSprint ? RunningFootstepClip : FootstepClip;  // Choose the correct clip based on whether they are sprinting
 
             
-            if (PlayerAudio.clip != targetClip || !PlayerAudio.isPlaying)  // Only change/play if the clip isn't already playing
+            if (PlayerFootstepAudio.clip != targetClip || !PlayerFootstepAudio.isPlaying)  // Only change/play if the clip isn't already playing
             {
-                PlayerAudio.clip = targetClip;
-                PlayerAudio.loop = true;
-                PlayerAudio.Play();
+                PlayerFootstepAudio.clip = targetClip;
+                PlayerFootstepAudio.loop = true;
+                PlayerFootstepAudio.Play();
             }
         }
         else // If they aren't moving or are airborne, stop all footstep sounds
         {
-            if (PlayerAudio.isPlaying)
+            if (PlayerFootstepAudio.isPlaying)
             {
-                PlayerAudio.Stop();
+                PlayerFootstepAudio.Stop();
             }
         }
     }
