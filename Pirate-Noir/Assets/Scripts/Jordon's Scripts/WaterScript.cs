@@ -9,12 +9,12 @@ public class WaterScript : MonoBehaviour
     public PlayerStats playerStats; // reference to the player's stats script to modify health
     private float damageTimer;
 
-    private Rigidbody playerRigidbody; // reference to the player's Rigidbody component
+    private PlayerMovement movement; // reference to the player's Rigidbody component
 
     void Start()
     {
         playerStats = Object.FindAnyObjectByType<PlayerStats>(); // reference to the player's stats script to modify health
-        playerRigidbody = Object.FindAnyObjectByType<Rigidbody>(); // reference to the player's stats script to modify health
+        movement = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>(); // reference to the player's stats script to modify mass in rigid body
 
     }
 
@@ -22,6 +22,7 @@ public class WaterScript : MonoBehaviour
     {
         if (other.CompareTag(playerTag))
         {
+            movement.Gravity = -6f; //to simulate water
             // Reduce the timer by the time passed since the last frame
             damageTimer -= Time.deltaTime;
 
@@ -42,6 +43,7 @@ public class WaterScript : MonoBehaviour
         // Check if the exiting object has the Player tag
         if (other.CompareTag(playerTag))
         {
+            movement.Gravity = -25f; //to reset
             Debug.Log("Player is back on dry land");
             // ADD YOUR EXIT ACTION HERE
             //maybe water effect for leaving water if we have grapple possible?

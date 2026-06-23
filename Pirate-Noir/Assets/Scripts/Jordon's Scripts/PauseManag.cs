@@ -95,28 +95,26 @@ public class PauseManagement : MonoBehaviour
         
 
         GameObject canvgroup = GameObject.Find("PauseMenu"); // Get the canvas group from the gameobject PauseMenu 
-        if (canvgroup != null) canvasGroup = canvgroup.GetComponent<CanvasGroup>();
+            if (canvgroup != null) canvasGroup = canvgroup.GetComponent<CanvasGroup>();
 
         GameObject healcanvGroup = GameObject.Find("HealthBarParent"); // Get the canvas group from the gameobject PauseMenu 
-        if (healcanvGroup != null) HealthcanvasGroup = healcanvGroup.GetComponent<CanvasGroup>();
+            if (healcanvGroup != null) HealthcanvasGroup = healcanvGroup.GetComponent<CanvasGroup>();
 
         GameObject TopImg = GameObject.Find("Top"); // Get the Top Image Rect component from the gameobject Top
-        if (TopImg != null) TopImage = TopImg.GetComponent<RectTransform>(); // check if its there
+            if (TopImg != null) TopImage = TopImg.GetComponent<RectTransform>(); // check if its there
         GameObject BottomImg = GameObject.Find("Bottom"); // Get the Bottom Image Rect component from the gameobject Bottom
-        if (BottomImg != null) BottomImage = BottomImg.GetComponent<RectTransform>(); // check if its there
+            if (BottomImg != null) BottomImage = BottomImg.GetComponent<RectTransform>(); // check if its there
 
 
         GameObject MasVolume = GameObject.Find("Master Volume"); // Get the Master Volume Slider component 
-        if (MasVolume != null) masterVolumeSlider = MasVolume.GetComponent<Slider>(); // check if its there
-        
+            if (MasVolume != null) masterVolumeSlider = MasVolume.GetComponent<Slider>(); // check if its there
         GameObject MusicSlider = GameObject.Find("Music Volume"); // Get the Music Volume Slider component 
-        if (MusicSlider != null) musicVolumeSlider = MusicSlider.GetComponent<Slider>(); // check if its there
-        
+            if (MusicSlider != null) musicVolumeSlider = MusicSlider.GetComponent<Slider>(); // check if its there
         GameObject sfx = GameObject.Find("SFX Volume"); // Get the SFX Slider component 
-        if (sfx != null) sfxSlider = sfx.GetComponent<Slider>(); // check if its there
+            if (sfx != null) sfxSlider = sfx.GetComponent<Slider>(); // check if its there
+
 
         stambar = Object.FindAnyObjectByType<StaminaBarUI>(); // reference to the player's stats script to modify health
-
         healthbar = Object.FindAnyObjectByType<HealthBar>(); // reference to the player's stats script to modify health
 
 
@@ -560,23 +558,11 @@ public class PauseManagement : MonoBehaviour
     {
         value = Mathf.Clamp(value, 0.0001f, 1f);
         audioMixer.SetFloat("SFXVolume", Mathf.Log10(value) * 20);
+        audioMixer.SetFloat("UIVolume", Mathf.Log10(value) * 20);
+
     }
 
     #endregion
 
-    #region === Quit Game ===
-
-    public void Quit()
-    {
-        Debug.Log("Quit button pressed\nGame exiting...");
-        Application.Quit();
-
-
-        // stops playback in editor to test out mechanics when called (can be comented out)
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #endif
-    }
     
-    #endregion
 }
