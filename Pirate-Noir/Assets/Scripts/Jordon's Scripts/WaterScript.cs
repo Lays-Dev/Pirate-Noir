@@ -9,9 +9,13 @@ public class WaterScript : MonoBehaviour
     public PlayerStats playerStats; // reference to the player's stats script to modify health
     private float damageTimer;
 
+    private Rigidbody playerRigidbody; // reference to the player's Rigidbody component
+
     void Start()
     {
         playerStats = Object.FindAnyObjectByType<PlayerStats>(); // reference to the player's stats script to modify health
+        playerRigidbody = Object.FindAnyObjectByType<Rigidbody>(); // reference to the player's stats script to modify health
+
     }
 
     private void OnTriggerStay(Collider other)

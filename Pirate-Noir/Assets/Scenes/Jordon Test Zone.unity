@@ -245,8 +245,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaterScript
   playerTag: Player
-  PainDelay: 0.2
-  PainAmount: 25
+  PainDelay: 0.05
+  PainAmount: 50
   playerStats: {fileID: 0}
 --- !u!1 &242060920
 GameObject:

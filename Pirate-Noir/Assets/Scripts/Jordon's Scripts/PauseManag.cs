@@ -160,8 +160,6 @@ public class PauseManagement : MonoBehaviour
         //move the images from the closed position to the open position for the pause area 
         //Check if images are there and make the text and buttons appear
 
-        SetBGMVolume(0f);
-        SetSFXVolume(0f);
         
         StartCoroutine(stambar.FadeOutSprint());
         StartCoroutine(healthbar.FadeOutHealth());
@@ -188,8 +186,7 @@ public class PauseManagement : MonoBehaviour
         //move the images from the open position to the closed position for the pause area 
         //transition to turn off opacity and make the ui dissappear for the pause area
 
-        SetBGMVolume(musicVolume);
-        SetSFXVolume(sfxVolume);
+        UpdateSound();
 
         Cursor.lockState = CursorLockMode.Locked; //unlock cursor so the player can click on the buttons
         Cursor.visible = false;
