@@ -39,7 +39,7 @@ public class EnemyWaves : MonoBehaviour
             {
                 GameObject obj = Instantiate(regularEnemy);
                 obj.SetActive(false);
-                enemyWaves.Add(obj);
+                enemyWaves.Add(obj); // adds enemy to the list
             }
             else if (enemyType == 1)
             {
@@ -81,14 +81,14 @@ public class EnemyWaves : MonoBehaviour
         return null; // if no pooled object is available, return null, this will probably change in later versions
     }
 
-    public void WavesProcess()
+    public void WavesProcess() //spawns the waves of enemies
     {
-        if (ActiveEnemies > 0)
+        if (ActiveEnemies > 0) // if not all enemies have been defeated, the next wave does not start
         {
             return;
         }
 
-        if(currentRound >= roundNumber)
+        if(currentRound >= roundNumber) // stops waves from continuing if they are equal to the selected number of rounds listed.
         {
             return;
         }
