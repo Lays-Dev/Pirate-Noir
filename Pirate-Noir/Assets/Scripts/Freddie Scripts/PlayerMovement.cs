@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.InputSystem; // Unity Input System namespace
 
 public class PlayerMovement : MonoBehaviour
@@ -51,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
     #region === Attack Settings ===
     [Header("Attack Settings")]
     public LayerMask AttackableLayer;
+    public bool CanAttack = true; // Whether the player can attack (e.g., not stunned or in a cutscene)
     #endregion
 
     #region === Animation ===
@@ -230,8 +232,11 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext Context)
     {
-        if (Context.performed && CanMove) // Only check for Enemies when the attack button is initially pressed
+        if (Context.performed && CanMove && CanAttack) // Only check for Enemies when the attack button is initially pressed
         {
+            // Start Attack Cooldown
+            StartCoroutine(AttackCooldownRoutine());
+
             Debug.Log("Attack button pressed, checking for Enemies...");
             
             Ray AttackRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward); // Create a ray from the camera's position forward
@@ -256,6 +261,15 @@ public class PlayerMovement : MonoBehaviour
                 PlayerActionAudio.PlayOneShot(AttackClip); // Play attack sound effect
             }
         }
+    }
+
+    private IEnumerator AttackCooldownRoutine()
+    {
+        CanAttack = false; // Close the gate
+
+        yield return new WaitForSeconds(Stats.AttackCooldown);
+
+        CanAttack = true; // Open the gate
     }
 
     #region === Animation Logic ===
