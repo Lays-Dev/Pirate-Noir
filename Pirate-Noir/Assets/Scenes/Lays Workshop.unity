@@ -15090,7 +15090,7 @@ GameObject:
   - component: {fileID: 1553974096}
   - component: {fileID: 1553974095}
   m_Layer: 0
-  m_Name: Enemy Generator Manager
+  m_Name: Generator Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
