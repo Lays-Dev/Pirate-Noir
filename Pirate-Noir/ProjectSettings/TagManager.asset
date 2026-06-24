@@ -5,7 +5,6 @@ TagManager:
   serializedVersion: 3
   tags:
   - Ground
-  - Floor
   layers:
   - Default
   - TransparentFX
@@ -20,7 +19,7 @@ TagManager:
   - Interactable
   - HurtBox
   - NonWalkable
-  - Floor
+  - Breakable
   - 
   - 
   - 

@@ -18,11 +18,20 @@ public class MainMenuMan : MonoBehaviour
         Debug.Log("Scene loaded: " + sceneName);
     }
 
-    // public void LoadSceneByName()
-	// {
-	// 	SceneManager.LoadScene(SceneToLoad);
-    //     Debug.Log("Scene loaded: " + SceneToLoad);
-    //     Time.timeScale = 1f;
-    //     PauseManag.GameIsPaused = false;
-    // }
+    #region === Quit Game ===
+
+    public void Quit()
+    {
+        Debug.Log("Quit button pressed\nGame exiting...");
+        Application.Quit();
+
+
+        // stops playback in editor to test out mechanics when called (can be comented out)
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+    }
+    
+    #endregion
+
 }

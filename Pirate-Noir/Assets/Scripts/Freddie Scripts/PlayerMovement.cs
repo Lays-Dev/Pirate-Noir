@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.InputSystem; // Unity Input System namespace
 
 public class PlayerMovement : MonoBehaviour
@@ -51,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
     #region === Attack Settings ===
     [Header("Attack Settings")]
     public LayerMask AttackableLayer;
+    public bool CanAttack = true; // Whether the player can attack (e.g., not stunned or in a cutscene)
     #endregion
 
     #region === Animation ===
@@ -62,7 +64,8 @@ public class PlayerMovement : MonoBehaviour
 
     #region === Audio ===
     [Header("Audio")]
-    public AudioSource PlayerAudio; // AudioSource for sounds
+    public AudioSource PlayerFootstepAudio; // AudioSource for footstep sounds
+    public AudioSource PlayerActionAudio; // AudioSource for action sounds
     public AudioClip FootstepClip; // Footstep sound clip
     public AudioClip RunningFootstepClip; // Running footstep sound clip
     public AudioClip JumpClip; // Jump sound clip
@@ -73,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("UI")]
     public PauseManagement PauseManag;
     public WinEndManag WinEndManag;
-
+    
 
     #endregion
 
@@ -110,7 +113,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext Context) // Called when jump input occurs
     {
-        //Debug.Log("Jump input received"); // Log jump input for debugging
+        Debug.Log("Jump input received"); // Log jump input for debugging
         if (Context.started && IsGrounded && CanMove) // Only jump if grounded and can move
         {
             VerticalY = Mathf.Sqrt(JumpForce * -2f * Gravity); // Calculate jump velocity
@@ -119,9 +122,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 Anim.SetTrigger("Jump"); // Trigger jump animation
             }
-            if (PlayerAudio != null && JumpClip != null) // Ensure audio source and clip exist
+            if (PlayerActionAudio != null && JumpClip != null) // Ensure audio source and clip exist
             {
-                PlayerAudio.PlayOneShot(JumpClip); // Play jump sound effect
+                PlayerActionAudio.PlayOneShot(JumpClip); // Play jump sound effect
             }
         }
     }
@@ -130,10 +133,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (context.started && PauseManag != null)
         {
-            if (PauseManag.GameIsPaused)
+            if (PauseManag.GameIsPaused) 
                 PauseManag.Resume();
-            else
-                PauseManag.Pause();
+            else 
+                PauseManag.Pause();    
         }
     }
 
@@ -142,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
         if (!CanMove) return; // Don't process movement if player can't move
         CanSprint = IsSprinting && MoveInput.magnitude > 0 && Stats.CurrentStamina > StaminaDrainRate; // Player can sprint if sprinting, has movement input, and enough stamina to drain
         CurrentSpeed = CanSprint ? Stats.SprintSpeed : Stats.MoveSpeed; // Use modified speeds from stats
-
+        
         MoveDirection = transform.forward * MoveInput.y + transform.right * MoveInput.x; // Calculate movement direction based on input and player orientation
         Vector3 HorizontalVelocity = MoveDirection * CurrentSpeed; // Calculate horizontal velocity based on movement direction and current speed
         RB.linearVelocity = new Vector3(HorizontalVelocity.x, VerticalY, HorizontalVelocity.z); // Set Rigidbody velocity, preserving vertical velocity for jumping and gravity
@@ -157,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // Drain stamina directly from stats
             Stats.CurrentStamina -= StaminaDrainRate * Time.fixedDeltaTime;
-
+            
             if (Stats.CurrentStamina < 0f) Stats.CurrentStamina = 0f;
         }
         else
@@ -166,7 +169,7 @@ public class PlayerMovement : MonoBehaviour
             if (Stats.CurrentStamina < Stats.MaxStamina)
             {
                 Stats.CurrentStamina += StaminaRegenRate * Time.fixedDeltaTime;
-
+                
                 if (Stats.CurrentStamina > Stats.MaxStamina) Stats.CurrentStamina = Stats.MaxStamina;
             }
         }
@@ -175,7 +178,7 @@ public class PlayerMovement : MonoBehaviour
     #region === Ground Detection ===
 
     // Checks whether the player is currently grounded.
-
+    
     private void CheckGround()
     {
         // Create sphere position slightly above feet
@@ -189,9 +192,9 @@ public class PlayerMovement : MonoBehaviour
 
     #region === Gravity ===
 
-
+    
     // Applies custom gravity to the player.
-
+    
     private void ApplyGravity()
     {
         if (IsGrounded && VerticalY < 0) // Player grounded while falling
@@ -211,7 +214,7 @@ public class PlayerMovement : MonoBehaviour
         if (Context.started && CanMove) // Only check for interactables when the interact button is initially pressed
         {
             Debug.Log("Interact button pressed, checking for interactables...");
-
+            
             Ray Ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward); // Create a ray from the camera's position forward
             Debug.DrawRay(Ray.origin, Ray.direction * InteractRange, Color.red, 2f); // Draw the ray in the scene view for debugging purposes
 
@@ -229,10 +232,13 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext Context)
     {
-        if (Context.performed && CanMove) // Only check for Enemies when the attack button is initially pressed
+        if (Context.performed && CanMove && CanAttack) // Only check for Enemies when the attack button is initially pressed
         {
-          //  Debug.Log("Attack button pressed, checking for Enemies...");
+            // Start Attack Cooldown
+            StartCoroutine(AttackCooldownRoutine());
 
+            Debug.Log("Attack button pressed, checking for Enemies...");
+            
             Ray AttackRay = new Ray(Camera.main.transform.position, Camera.main.transform.forward); // Create a ray from the camera's position forward
             Debug.DrawRay(AttackRay.origin, AttackRay.direction * Stats.AttackRange, Color.red, 2f); // Draw the ray in the scene view for debugging purposes
 
@@ -250,18 +256,27 @@ public class PlayerMovement : MonoBehaviour
                 Anim.SetTrigger("Attack"); // Trigger attack animation
             }
 
-            if (PlayerAudio != null && AttackClip != null) // Ensure audio source and clip exist
+            if (PlayerActionAudio != null && AttackClip != null) // Ensure audio source and clip exist
             {
-                PlayerAudio.PlayOneShot(AttackClip); // Play attack sound effect
+                PlayerActionAudio.PlayOneShot(AttackClip); // Play attack sound effect
             }
         }
     }
 
+    private IEnumerator AttackCooldownRoutine()
+    {
+        CanAttack = false; // Close the gate
+
+        yield return new WaitForSeconds(Stats.AttackCooldown);
+
+        CanAttack = true; // Open the gate
+    }
+
     #region === Animation Logic ===
 
-
+    
     // Updates animator parameters based on player state.
-
+    
     private void UpdateAnimations()
     {
         if (Anim == null) return; // Stop if no animator assigned
@@ -285,27 +300,27 @@ public class PlayerMovement : MonoBehaviour
     // Plays movement audio based on player state.
     private void HandleFootstepAudio()
     {
-        if (PlayerAudio == null) return;
+        if (PlayerFootstepAudio == null) return; 
 
-
+        // MoveInput != Vector2.zero
         if (RB.linearVelocity.magnitude > 0.1f && IsGrounded)  // Check if the player is actually moving and on the ground
         {
-
+            
             AudioClip targetClip = CanSprint ? RunningFootstepClip : FootstepClip;  // Choose the correct clip based on whether they are sprinting
 
-
-            if (PlayerAudio.clip != targetClip || !PlayerAudio.isPlaying)  // Only change/play if the clip isn't already playing
+            
+            if (PlayerFootstepAudio.clip != targetClip || !PlayerFootstepAudio.isPlaying)  // Only change/play if the clip isn't already playing
             {
-                PlayerAudio.clip = targetClip;
-                PlayerAudio.loop = true;
-                PlayerAudio.Play();
+                PlayerFootstepAudio.clip = targetClip;
+                PlayerFootstepAudio.loop = true;
+                PlayerFootstepAudio.Play();
             }
         }
         else // If they aren't moving or are airborne, stop all footstep sounds
         {
-            if (PlayerAudio.isPlaying)
+            if (PlayerFootstepAudio.isPlaying)
             {
-                PlayerAudio.Stop();
+                PlayerFootstepAudio.Stop();
             }
         }
     }
