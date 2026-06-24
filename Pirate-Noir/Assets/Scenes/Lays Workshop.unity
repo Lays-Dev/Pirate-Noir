@@ -15291,6 +15291,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyGenerator
   playerTransform: {fileID: 898487504}
+  lootPrefabs:
+  - {fileID: 1671758998919492, guid: cc77b508daddefc4e92539d3ccdfbd45, type: 3}
+  minLootCount: 2
+  maxLootCount: 6
+  targetYRotation: 0
+  floorLayer:
+    serializedVersion: 2
+    m_Bits: 0
   enemyEasy: {fileID: 3109924807613956076, guid: c5475712ae06b4d4dbb9f1dcf807cf78, type: 3}
   enemyMedium: {fileID: 3109924807613956076, guid: c5475712ae06b4d4dbb9f1dcf807cf78, type: 3}
   enemyHard: {fileID: 3109924807613956076, guid: c5475712ae06b4d4dbb9f1dcf807cf78, type: 3}

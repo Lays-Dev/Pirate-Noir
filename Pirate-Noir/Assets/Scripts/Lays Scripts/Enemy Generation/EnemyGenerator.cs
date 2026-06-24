@@ -8,6 +8,23 @@ public class EnemyGenerator : MonoBehaviour
     public Transform playerTransform;
 
 
+[Header("Loot Settings")]
+    [Tooltip("Add your various loot chests or items here.")]
+    public GameObject[] lootPrefabs;
+    public int minLootCount = 2;
+    public int maxLootCount = 6;
+    [Tooltip("The Y-axis rotation angles you want your loot to face (e.g., 0 = North, 90 = East, 180 = South, 270 = West).")]
+    public float targetYRotation = 0f;
+
+    // --- ADD THIS TO THE TOP OF YOUR SCRIPT WITH THE OTHER VARIABLES ---
+[Header("Loot Snapping Settings")]
+    [Tooltip("Set this to the specific layer your floor/ground objects are on.")]
+    public LayerMask floorLayer;
+    [Tooltip("Slight upward adjustment to pull the loot out of the ground if its pivot point is centered.")]
+public float lootYOffset = 0.5f;
+
+
+
     [Header("Enemy Prefabs")]
     public GameObject enemyEasy;
     public GameObject enemyMedium;
@@ -47,6 +64,11 @@ public class EnemyGenerator : MonoBehaviour
         // Randomly spawn between minEnemies and 10 enemies
         int enemiesToSpawn = Random.Range(minEnemies, 11);
         Debug.Log("Spawning " + enemiesToSpawn + " enemies");
+
+        // 2. Spawning Loot (Independent from NavMesh)
+        int lootToSpawn = Random.Range(minLootCount, maxLootCount + 1); // +1 because integer max is exclusive
+        Debug.Log("Spawning " + lootToSpawn + " loot items");
+        SpawnLoot(lootToSpawn);
 
         // Call the method to spawn enemies
         SpawnEnemies(enemiesToSpawn);
@@ -103,4 +125,50 @@ public class EnemyGenerator : MonoBehaviour
         finalPosition = Vector3.zero;
         return false;
     }
+
+private void SpawnLoot(int amount)
+{
+    if (lootPrefabs == null || lootPrefabs.Length == 0)
+    {
+        Debug.LogWarning("No loot prefabs assigned in the Loot Prefabs array!");
+        return;
+    }
+
+    for (int i = 0; i < amount; i++)
+    {
+        // 1. Pick a random horizontal spot
+        float x = Random.Range(minBounds.x, maxBounds.x);
+        float z = Random.Range(minBounds.z, maxBounds.z);
+
+        // 2. Fire the laser down from safely above the upper bounds
+        float highYStart = maxBounds.y + 20f;
+        Vector3 raycastOrigin = new Vector3(x, highYStart, z);
+
+        RaycastHit hit;
+        float maxRayDistance = (highYStart - minBounds.y) + 30f;
+
+        if (Physics.Raycast(raycastOrigin, Vector3.down, out hit, maxRayDistance, floorLayer))
+        {
+            // 3. Get the raw floor point, then add your custom offset to the Y axis
+            Vector3 calculatedPosition = hit.point;
+            calculatedPosition.y += lootYOffset;
+
+            // 4. Randomly pick an item from your array
+            int randomLootIndex = Random.Range(0, lootPrefabs.Length);
+            GameObject chosenLootPrefab = lootPrefabs[randomLootIndex];
+
+            if (chosenLootPrefab != null)
+            {
+                Quaternion specificRotation = Quaternion.Euler(0f, targetYRotation, 0f);
+
+                // Spawn at the calculated position with the offset applied
+                Instantiate(chosenLootPrefab, calculatedPosition, specificRotation);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Loot Raycast missed the floor at X: {x}, Z: {z}. No collider on the designated layer was found.");
+        }
+    }
+}
 }

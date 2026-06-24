@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     public Transform Player;
     public PlayerStats player; // to use the health values from that code
 
-    
+
     [Header("Attack Settings")]
     public Transform Attack; // enemies themselves won't hurt you but they will have attacks that do
     public GameObject Sword; // Model that will get disabled after attack and enabled when attacking.
@@ -30,12 +30,12 @@ public class Enemy : MonoBehaviour
     public float AttackDuration = 1f;
     //In future versions the animator will play a role, for now this will do.
 
-    
+
 
     /*public Animator animator; // to play attack animations, will be used in later versions
     public bool isAttacking = false; // to prevent the enemy from attacking multiple times in a row without cooldown, will be used in later versions*/
-    
-    
+
+
     [Header("Distance Check")]
     private float Distance; // to optimize distance checking
     private float AttackPhaseSqrRange; // squared range for attack phase
@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour
     public float DetectRange = 8f; // the range from which the enemy will detect and attack the player.
     public float FarRange = 15f;
     public float AttackPhaseRange = 5f;
-    //public float distance; 
+    //public float distance;
 
 
     [Header("Behavior Settings")]
@@ -51,11 +51,11 @@ public class Enemy : MonoBehaviour
     public float BehaviorTimer = 5f;
     public bool ChoosingBehavior = false;
     public bool IsDoingAction = false;
-    
+
     private Coroutine behaviorCoroutine;
 
     [Header("Roam Settings")]
-    public float roamRadius = 10f; 
+    public float roamRadius = 10f;
     public float roamTimer = 5f; // time in seconds between each roam action
     private float roamTime;
     public Vector3 roamPosition;
@@ -75,7 +75,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         Sword.SetActive(false); // sword is disabled at the start, will be enabled when attacking, this will probably change in later versions
-        
+
         AttackPhaseSqrRange = AttackPhaseRange * AttackPhaseRange;
         FarSqrRange = FarRange * FarRange;
 
@@ -96,12 +96,12 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         Distance = (this.transform.position - Player.position).sqrMagnitude;
-        
+
         //distance = Vector3.Distance(this.transform.position, Player.position); // distance which will be used to measure and trigger enemy attacks
 
         //agent.SetDestination(Player.position);
-        
-        
+
+
         switch (currentState)
         {
             case EnemyState.Idle:
@@ -113,8 +113,8 @@ public class Enemy : MonoBehaviour
             case EnemyState.Chase:
                 ChasePlayer();
                 break;
-            
-            
+
+
             case EnemyState.StrafeLeft:
                 if (!IsDoingAction)
                 {
@@ -141,10 +141,10 @@ public class Enemy : MonoBehaviour
                     // To circumvent the coroutine and prevent chase from never ending.
                     // TEMPORARY SOLUTION.
                 }
-                
+
 
                 break;
-            
+
         }
 
         if(Distance <= AttackPhaseSqrRange)
@@ -156,10 +156,10 @@ public class Enemy : MonoBehaviour
         else if(Distance > AttackPhaseSqrRange)
         {
             AttackPhase = false;
-            
+
         }
-        
-        
+
+
 
     }
     #endregion
@@ -180,7 +180,7 @@ public class Enemy : MonoBehaviour
             behaviorCoroutine = StartCoroutine(BehaviorChoice()); // will choose a behavior after a certain amount of time, this will probably change in later versions
         }
     }
-    
+
     public void Roam()
     {
         // code to make the enemy walk around in a few selected areas at random from a specific distance from the enemy, will be used in later versions
@@ -188,7 +188,7 @@ public class Enemy : MonoBehaviour
         agent.speed = speed2;
 
         // If enough time passed OR reached destination
-        if (roamTime >= roamTimer || (this.transform.position - roamPosition).sqrMagnitude < 4f) 
+        if (roamTime >= roamTimer || (this.transform.position - roamPosition).sqrMagnitude < 4f)
         {
             roamPosition = RandomDirection();
 
@@ -196,11 +196,11 @@ public class Enemy : MonoBehaviour
 
             roamTime = 0f;
         }
-        
+
         if(!ChoosingBehavior)
         {
             behaviorCoroutine = StartCoroutine(BehaviorChoice()); // will choose a behavior after a certain amount of time, this will probably change in later versions
-            /* 
+            /*
             setting the coroutine like this makes it possible to stop it as well, which is why I went with this
             instead of just StartCoroutine(BehaviorChoice());
             */
@@ -216,7 +216,7 @@ public class Enemy : MonoBehaviour
     {
         Vector3 randomDirection = Random.insideUnitSphere * roamRadius; // direction is random, but limited within the radius.
 
-        randomDirection += transform.position; 
+        randomDirection += transform.position;
 
         NavMeshHit hit;
 
@@ -227,7 +227,7 @@ public class Enemy : MonoBehaviour
 
         return transform.position;
     }
-    
+
     public void ChasePlayer()
     {
         if(behaviorCoroutine != null)
@@ -242,7 +242,7 @@ public class Enemy : MonoBehaviour
         if(AttackPhase && !IsDoingAction)
         {
             ImmediateAction();
-            
+
             /*if (!ChoosingBehavior)
             {
                 behaviorCoroutine = StartCoroutine(BehaviorChoice());
@@ -270,8 +270,8 @@ public class Enemy : MonoBehaviour
         IsDoingAction = true;
         Sword.SetActive(true);
         agent.speed = speed;
-        agent.SetDestination(Player.position); // if strafing, there's a chance enemy might stay circling the player, so I'm putting this here.    
-        
+        agent.SetDestination(Player.position); // if strafing, there's a chance enemy might stay circling the player, so I'm putting this here.
+
         yield return new WaitForSeconds(AttackDuration);
 
         Sword.SetActive(false);
@@ -293,7 +293,7 @@ public class Enemy : MonoBehaviour
 
         //IsDoingAction = false;
     }
-    
+
     public void DamagePlayer()
     {
         StartCoroutine(AttackCooldown());
@@ -333,10 +333,10 @@ public class Enemy : MonoBehaviour
             // Unity does not have to call for the transform and player position multiple times in a single frame anymore as it calls for this instead.
             Vector3 enPosition = transform.position;
             Vector3 playerPosition = Player.position;
-            
+
             var OffsetPlayer = enPosition - playerPosition; // get the direction from the enemy to the player
             var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
-            
+
             agent.SetDestination(enPosition + StrafeDirection); // set the destination to the left of the player, this will probably change in later versions
             lookPos = playerPosition - enPosition; // keeps the enemy looking at the player
             lookPos.y = 0; // we aren't trying to make the enemy go up
@@ -344,9 +344,9 @@ public class Enemy : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
 
             //timer += Time.deltaTime;
-            
+
             // timer changed so it doesn't set a destination every frame.
-            yield return new WaitForSeconds(0.2f); 
+            yield return new WaitForSeconds(0.2f);
             timer += 0.2f;
 
             /*
@@ -372,7 +372,7 @@ public class Enemy : MonoBehaviour
     }
 
     public IEnumerator StrafeRight()
-    {   
+    {
         float timer = 0f;
         agent.speed = speed2;
 
@@ -380,10 +380,10 @@ public class Enemy : MonoBehaviour
         {
             Vector3 enPosition = transform.position;
             Vector3 playerPosition = Player.position;
-            
+
             var OffsetPlayer = playerPosition - enPosition; // get the direction from the enemy to the player
             var StrafeDirection = Vector3.Cross(OffsetPlayer, Vector3.up);
-            
+
             agent.SetDestination(enPosition + StrafeDirection); // set the destination to the left of the player, this will probably change in later versions
             lookPos = playerPosition - enPosition; // keeps the enemy looking at the player
             lookPos.y = 0; // we aren't trying to make the enemy go up
@@ -436,12 +436,12 @@ public class Enemy : MonoBehaviour
     public IEnumerator BehaviorChoice()
     {
         ChoosingBehavior = true;
-        
+
         // If the player goes far enough, make it so that after a few seconds, behavior resets to roam and/or idle.
         // This is temporary, I will change this over the course of development.
 
         yield return new WaitForSeconds(BehaviorTimer);
-        
+
         int choice = Random.Range(0, 100); // Percentage chance to choose a behavior.
 
         if(!AttackPhase)
@@ -454,13 +454,13 @@ public class Enemy : MonoBehaviour
             {
                 currentState = EnemyState.Roam;
             }
-            
-            
+
+
             /*else
             {
                 currentState = EnemyState.Chase;
             }
-            
+
             Enemy will only start chasing when player is in range, it will not trigger automatically.
             */
 
@@ -491,21 +491,21 @@ public class Enemy : MonoBehaviour
             {
                 currentState = EnemyState.StepBack;
             }
-            
+
         }
         */
 
-        
 
-        
+
+
         ChoosingBehavior = false;
-        
+
     }
 
     private void ImmediateAction()
     {
         int choice = Random.Range(0, 100);
-        
+
         if(AttackPhase)
         {
             if(choice < 25)
@@ -535,5 +535,5 @@ public class Enemy : MonoBehaviour
 
     #endregion
 
-    
+
 }

@@ -106,7 +106,7 @@ public class PlatformProgression : MonoBehaviour
     private void Start()
     {
         // Kills start at 0 at game start
-        Debug.Log("Kills start = " + currentKills);
+        //Debug.Log("Kills start = " + currentKills);
 
         // Store the starting position of the platform to calculate sinking distance
         startPosition = platformToRotate.position;
