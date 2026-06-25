@@ -20,6 +20,12 @@ public class MainMenuMan : MonoBehaviour
     private static readonly string sfxVolumePref = "SoundEffectsVolumePref";
     private bool isInitializing = false;
 
+    public bool ToggleMusicOn = false;
+    public AudioSource MusicAS;
+
+    public bool ToggleSFXOn = false;
+    public AudioSource SFXAS;
+
     public void Awake()
     {
         audioMixer = Resources.Load<UnityEngine.Audio.AudioMixer>("MasterVolume");
@@ -152,7 +158,33 @@ public class MainMenuMan : MonoBehaviour
 
     }
 
+    public void ToggleMusic()
+    {
+        if (ToggleMusicOn == false)
+            {
+                MusicAS.Play();
+                ToggleMusicOn = true;
+            }
+            else
+            {
+                MusicAS.Stop();
+                ToggleMusicOn = false;
+            }
+    }
 
+    public void ToggleSFX()
+    {
+            if (ToggleSFXOn == false)
+            {
+                SFXAS.Play();
+                ToggleSFXOn = true;
+            }
+            else
+            {
+                SFXAS.Stop();
+                ToggleSFXOn = false;
+            }
+    }
 
 
     #endregion
