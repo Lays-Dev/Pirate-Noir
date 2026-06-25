@@ -131,15 +131,23 @@ public class MainMenuMan : MonoBehaviour
     // so you have to convert the value so the mixer will read it correctly.
     public void SetMasterVolume(float value)
     {
+        if (audioMixer == null) audioMixer = Resources.Load<AudioMixer>("MasterVolume");
+
         if (audioMixer != null)
         {
             value = Mathf.Clamp(value, 0.0001f, 1f);
             audioMixer.SetFloat("MasterVolume", Mathf.Log10(value) * 20);
         }
+        else
+        {
+            Debug.LogError("[Audio Error] AudioMixer is missing from the Inspector slot and could not be found in the Resources folder!");
+        }
     }
 
     public void SetBGMVolume(float value)
     {
+        if (audioMixer == null) audioMixer = Resources.Load<AudioMixer>("MasterVolume");
+
         if (audioMixer != null)
         {
             value = Mathf.Clamp(value, 0.0001f, 1f);
@@ -149,6 +157,8 @@ public class MainMenuMan : MonoBehaviour
 
     public void SetSFXVolume(float value)
     {
+        if (audioMixer == null) audioMixer = Resources.Load<AudioMixer>("MasterVolume");
+
         if (audioMixer != null)
         {
             value = Mathf.Clamp(value, 0.0001f, 1f);

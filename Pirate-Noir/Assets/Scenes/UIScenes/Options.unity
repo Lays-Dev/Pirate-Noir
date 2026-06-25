@@ -249,7 +249,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1501271433}
         m_TargetAssemblyTypeName: MainMenuMan, Assembly-CSharp
         m_MethodName: UpdateSound
-        m_Mode: 0
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -711,7 +711,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -3267,8 +3267,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -210, y: 0}
-  m_SizeDelta: {x: 417.97742, y: 100}
+  m_AnchoredPosition: {x: -288.65997, y: 0}
+  m_SizeDelta: {x: 339.3174, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1114493425
 MonoBehaviour:
@@ -4731,7 +4731,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
