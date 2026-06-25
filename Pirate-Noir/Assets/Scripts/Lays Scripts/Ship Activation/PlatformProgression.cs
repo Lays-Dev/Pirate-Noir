@@ -21,7 +21,7 @@ public class PlatformProgression : MonoBehaviour
 
     [Tooltip("Number of kills needed per ship to activate the next ship.")]
     [SerializeField] private int killsNeeded = 2;
-    // 
+    //
     [Tooltip("The next ship that will come onto the scene after the required kills are met.")]
     [SerializeField] private GameObject nextObjectToActivate;
 
@@ -76,6 +76,11 @@ public class PlatformProgression : MonoBehaviour
     // This will be used later to make the enemies fall when the ship starts sinking.
     [SerializeField] private PlatformCount[] enemies;
 
+    // This will allow the EnemyGenerator script to see if this is the final ship, so it can spawn more enemies.
+     public bool FinalPlatform => finalPlatform;
+
+
+
 #endregion
 #endregion
 #region Variables
@@ -101,9 +106,9 @@ public class PlatformProgression : MonoBehaviour
     private void Start()
     {
         // Kills start at 0 at game start
-        Debug.Log("Kills start = " + currentKills);
+        //Debug.Log("Kills start = " + currentKills);
 
-        // Store the starting position of the platform to calculate sinking distance 
+        // Store the starting position of the platform to calculate sinking distance
         startPosition = platformToRotate.position;
         // Finds all gambojects with the PlatformCount script. This will just be the enemies. Stores them in an array (enemies)
         enemies = FindObjectsByType<PlatformCount>();
@@ -136,7 +141,7 @@ public class PlatformProgression : MonoBehaviour
                 // X axis
                 platformToRotate.Rotate(-rotationSpeed * Time.deltaTime, 0f, 0f);
             }
-            // Stop rotation 
+            // Stop rotation
             else
             {
                 // Stops update
@@ -147,7 +152,7 @@ public class PlatformProgression : MonoBehaviour
                 finalRotation.x = maxRotation;
 
                 platformToRotate.eulerAngles = finalRotation;
-                
+
                 // This ship is now sinking!
                 sinkPlatform = true;
             }
@@ -187,7 +192,7 @@ public class PlatformProgression : MonoBehaviour
         {
             // Prevents this from being called twice.
             activated = true;
-            
+
             // This will run once the required kills have been met on the last ship. It will activate the winning ship.
             if (finalPlatform)
             {

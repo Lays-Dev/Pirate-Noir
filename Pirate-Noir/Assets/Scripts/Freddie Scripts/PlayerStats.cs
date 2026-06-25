@@ -32,19 +32,19 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Inventory")]
     public int Keys = 0; // Number of keys the player has
-    public int Coins = 0; // Number of coins the player has
+    public int Gold = 0; // Number of gold pieces the player has
     public int Score = 0; // Player's score (if we want to track it)
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
 }

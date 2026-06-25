@@ -18,10 +18,11 @@ public class PlayerAttacked : MonoBehaviour, IInteractable
         Debug.Log("Player Hit!"); // Log interaction for debugging
         Enemy.health -= Stats.AttackPower; // Reduce enemy health by player's attack power
         Debug.Log($"Enemy Health: {Enemy.health}"); // Log enemy health for debugging
-        if (Enemy.health <= 0) // Check if the enemy is defeated
+        
+        /*if (Enemy.health <= 0) // Check if the enemy is defeated
         {
             Debug.Log("Enemy Defeated!"); // Log enemy defeat for debugging
             Destroy(Enemy.gameObject); // Destroy the enemy GameObject
-        }
+        }*/
     }
 }

@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
 
     #region Variables
     public float health;
+    public float maxHealth;
     public int damage;
     public float speed; // When enemy gets close, speed will slow it down.
     // will put more settings later to customize speed in different phases, for now just the attack will change the speed.
@@ -30,7 +31,6 @@ public class Enemy : MonoBehaviour
     public float AttackDuration = 1f;
     //In future versions the animator will play a role, for now this will do.
 
-    
 
     /*public Animator animator; // to play attack animations, will be used in later versions
     public bool isAttacking = false; // to prevent the enemy from attacking multiple times in a row without cooldown, will be used in later versions*/
@@ -38,12 +38,15 @@ public class Enemy : MonoBehaviour
     
     [Header("Distance Check")]
     private float Distance; // to optimize distance checking
-    private float AttackPhaseSqrRange; // squared range for attack phase
-    private float FarSqrRange; // squared range for far range
+    public float AttackPhaseSqrRange; // squared range for attack phase
+    public float FarSqrRange; // squared range for far range
     public float DetectRange = 8f; // the range from which the enemy will detect and attack the player.
     public float FarRange = 15f;
     public float AttackPhaseRange = 5f;
-    //public float distance; 
+    //public float distance;
+
+    public float stopAttackRange = 20f;
+    public float stopAttackSqrRange;
 
 
     [Header("Behavior Settings")]
@@ -62,22 +65,25 @@ public class Enemy : MonoBehaviour
 
     [Header("Strafe Settings")]
     public float rotationSpeed = 5f;
-    private Vector3 lookPos;
-    private Quaternion rotation;
+    public Vector3 lookPos;
+    public Quaternion rotation;
     public float strafeSpeed = 4f;
 
+    public EnemyWaves enemyWaves;
     public EnemyState currentState; // to determine the current state of the enemy, will be used in later versions to make the enemy do different things based on the state.
     #endregion
 
 
     #region Start and Update
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public virtual void Start()
     {
+        maxHealth = health;
         Sword.SetActive(false); // sword is disabled at the start, will be enabled when attacking, this will probably change in later versions
         
         AttackPhaseSqrRange = AttackPhaseRange * AttackPhaseRange;
         FarSqrRange = FarRange * FarRange;
+        stopAttackSqrRange = stopAttackRange * stopAttackRange;
 
         currentState = EnemyState.Idle; // enemy starts in idle state, this will probably change in later versions
 
@@ -143,7 +149,7 @@ public class Enemy : MonoBehaviour
                 }
                 
 
-                break;
+            break;
             
         }
 
@@ -153,13 +159,16 @@ public class Enemy : MonoBehaviour
             //IsDoingAction = false; // this will allow the enemy to choose an attack when entering attack phase, this will probably change in later versions
         }
 
-        else if(Distance > AttackPhaseSqrRange)
+        else if(Distance > stopAttackSqrRange)
         {
             AttackPhase = false;
             
         }
         
-        
+        if (health <= 0f)
+        {
+            EnemyDied();
+        }
 
     }
     #endregion
@@ -206,7 +215,7 @@ public class Enemy : MonoBehaviour
             */
         }
 
-        if(Distance <= FarRange)
+        if(Distance <= FarSqrRange)
         {
             currentState = EnemyState.Chase; // Same thing as the idle .
         }
@@ -259,10 +268,26 @@ public class Enemy : MonoBehaviour
 
         // No behavior choice here, I want the player to either lose the enemy or have him get close and reaching attack phase.
     }
+
+    public void EnemyDied()
+    {
+        enemyWaves.ActiveEnemies--;
+        StopAllCoroutines();
+        if(enemyWaves.ActiveEnemies < 0)
+        {
+            enemyWaves.ActiveEnemies = 0;
+        }
+        
+        //Should I set it active or destroy the gameObject?
+        health = maxHealth;
+
+        this.gameObject.SetActive(false);
+        
+    }
     #endregion
 
     #region AttackCode
-    public IEnumerator AttackPlayer() //maybe change to coroutine later.
+    public virtual IEnumerator AttackPlayer() //maybe change to coroutine later.
     {
         //IsDoingAction = true;
         // code to make enemy attack player, due to a lack of animation:
@@ -319,10 +344,12 @@ public class Enemy : MonoBehaviour
 
         // Sword.SetActive(true); // will make a function later to make the player be detected after entering a certain range, making the sword spawn in.
     }
+
+
     #endregion
 
     #region StrafeCode
-    public IEnumerator StrafeLeft()
+    public virtual IEnumerator StrafeLeft()
     {
         float timer = 0f;
         agent.speed = speed2;
@@ -371,7 +398,7 @@ public class Enemy : MonoBehaviour
         }*/
     }
 
-    public IEnumerator StrafeRight()
+    public virtual IEnumerator StrafeRight()
     {   
         float timer = 0f;
         agent.speed = speed2;
@@ -502,7 +529,7 @@ public class Enemy : MonoBehaviour
         
     }
 
-    private void ImmediateAction()
+    public virtual void ImmediateAction()
     {
         int choice = Random.Range(0, 100);
         
@@ -520,6 +547,8 @@ public class Enemy : MonoBehaviour
             {
                 currentState = EnemyState.Attack;
             }
+
+            Debug.Log("Picked: " + currentState);
             /* don't have the other things implemented yet.
             else if (choice < 75)
             {
@@ -531,6 +560,17 @@ public class Enemy : MonoBehaviour
             }
             */
         }
+    }
+
+    void OnEnable()
+    {
+        currentState = EnemyState.Idle;
+        IsDoingAction = false;
+        ChoosingBehavior = false;
+        AttackPhase = false;
+
+        agent.ResetPath();
+        agent.isStopped = false;
     }
 
     #endregion
