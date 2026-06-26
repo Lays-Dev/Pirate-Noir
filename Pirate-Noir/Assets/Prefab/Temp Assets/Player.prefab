@@ -597,6 +597,7 @@ GameObject:
   - component: {fileID: 4632178226081566010}
   - component: {fileID: 1863053097020222024}
   - component: {fileID: 1023798812662600941}
+  - component: {fileID: 1491094400745792924}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -648,7 +649,7 @@ MonoBehaviour:
   GrapplingHooks: 0
   Bombs: 0
   Keys: 0
-  Gold: 0
+  Coins: 0
   Score: 0
 --- !u!114 &6685528757163221336
 MonoBehaviour:
@@ -677,7 +678,7 @@ MonoBehaviour:
   Gravity: -25
   GroundLayer:
     serializedVersion: 2
-    m_Bits: 12031
+    m_Bits: 3839
   GroundCheckRadius: 0.3
   GroundCheckOffset: 0.25
   InteractRange: 3
@@ -686,7 +687,7 @@ MonoBehaviour:
     m_Bits: 1024
   AttackableLayer:
     serializedVersion: 2
-    m_Bits: 8704
+    m_Bits: 512
   CanAttack: 1
   Anim: {fileID: 6712140846911845181}
   PlayerFootstepAudio: {fileID: 1863053097020222024}
@@ -1147,6 +1148,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1491094400745792924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2393370093522370787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21936a6b0db411549a90959d297d8f43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &2743417721344866559
 GameObject:
   m_ObjectHideFlags: 0
