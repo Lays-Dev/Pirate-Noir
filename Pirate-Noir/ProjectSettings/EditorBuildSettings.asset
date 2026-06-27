@@ -26,5 +26,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Freddie Test Zone.unity
     guid: f09c9d0b4f5969b4b815503adeedafa9
+  - enabled: 1
+    path: Assets/Scenes/Jordon Test Zone.unity
+    guid: eb55ac9f0c9ee4f418b8a4b694ce447c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

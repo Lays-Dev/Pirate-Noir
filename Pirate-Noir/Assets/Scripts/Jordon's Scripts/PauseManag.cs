@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement; 
 using UnityEngine.Audio;
-
+using UnityEngine.EventSystems;
 
 
 public class PauseManagement : MonoBehaviour
@@ -41,10 +41,14 @@ public class PauseManagement : MonoBehaviour
     public float TTSH = 330f; //"Target Top Settings Height" for the bottom piece in settings mode
     public float TBSH = -330f; //"Target Bottom Settings Height" for the bottom piece in settings mode
 
-    [Space(10)]
-    [Header("Audio Settings")]
+
     public GameObject PauseUI;
     public GameObject SettingsUI;
+    public GameObject firstSelectedPauseButton;
+    public GameObject firstSelectedSettingsButton;
+    
+    [Space(10)]
+    [Header("Audio Settings")]
 
     private static readonly string masterVolumePref = "MasterVolumePref";
     private static readonly string musicVolumePref = "MusicVolumePref";
@@ -177,6 +181,9 @@ public class PauseManagement : MonoBehaviour
         
         Movement.PlayerActionAudio.Stop();
         Movement.PlayerFootstepAudio.Stop();
+
+        EventSystem.current.SetSelectedGameObject(null); // Clear the current selected GameObject
+        EventSystem.current.SetSelectedGameObject(firstSelectedPauseButton); // Set the first selected button
         
     }
 
@@ -208,6 +215,7 @@ public class PauseManagement : MonoBehaviour
 
         Movement.CanMove = true;  //allow the player to move again when they unpause the game ~F
 
+        EventSystem.current.SetSelectedGameObject(null); // Clear the current selected GameObject
 
 
 
@@ -222,6 +230,8 @@ public class PauseManagement : MonoBehaviour
         InSettings = true;
         StartCoroutine(MoveTop());
         StartCoroutine(MoveBottom());
+        EventSystem.current.SetSelectedGameObject(null); // Clear the current selected GameObject
+        EventSystem.current.SetSelectedGameObject(firstSelectedSettingsButton); // Set the first selected button
     }
 
     public void LoadSceneByName()
@@ -242,6 +252,8 @@ public class PauseManagement : MonoBehaviour
         InSettings = false;
         StartCoroutine(SettingsMoveTop());
         StartCoroutine(SettingsMoveBottom());
+        EventSystem.current.SetSelectedGameObject(null); // Clear the current selected GameObject
+        EventSystem.current.SetSelectedGameObject(firstSelectedPauseButton); // Set the first selected button
 
     }
     #endregion
