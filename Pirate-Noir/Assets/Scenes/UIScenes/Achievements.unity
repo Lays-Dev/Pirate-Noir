@@ -582,6 +582,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97ab76419b2df6545829c6e677a29253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuMan
+  masterVolumeSlider: {fileID: 0}
+  musicVolumeSlider: {fileID: 0}
+  sfxSlider: {fileID: 0}
+  audioMixer: {fileID: 0}
+  ToggleMusicOn: 0
+  MusicAS: {fileID: 0}
+  ToggleSFXOn: 0
+  SFXAS: {fileID: 0}
 --- !u!114 &1528495664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -999,7 +1007,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 1609138848}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &2014609393
