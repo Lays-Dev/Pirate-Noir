@@ -24,6 +24,11 @@ public class EnemyWaves : MonoBehaviour
     public GameObject bigEnemy;
     public List<GameObject> enemyWaves = new List<GameObject>();
 
+    public int spawnLocationNumber;
+    public Transform spawn1;
+    public Transform spawn2; 
+    public float spawnWait = 0.5f;
+
     public int currentRound = 0;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -93,21 +98,31 @@ public class EnemyWaves : MonoBehaviour
             return;
         }
 
-        SpawnWave();
+        StartCoroutine(SpawnWave());
         currentRound++;
     } 
 
-    public void SpawnWave()
+    public IEnumerator SpawnWave()
     {
         for (int i = 0; i < enemiesPerWave; i++)
         {
+            spawnLocationNumber = Random.Range(0,2);
             GameObject enemy = GetPooledEnemy();
             if (enemy != null)
             {
-                enemy.transform.position = this.transform.position; // spawn the enemy at the spawner's position, this will probably change in later versions
+                if (spawnLocationNumber == 0)
+                {
+                    enemy.transform.position = spawn1.transform.position; // spawn the enemy at the spawner's position, this will probably change in later versions
+                }
+                else if (spawnLocationNumber == 1)
+                {
+                    enemy.transform.position = spawn2.transform.position; // spawn the enemy at the spawner's position, this will probably change in later versions
+                }
                 enemy.SetActive(true);
                 ActiveEnemies++;
             }
+
+            yield return new WaitForSeconds(spawnWait); // gives a little delay between enemies spawning.
         }
     }
 }

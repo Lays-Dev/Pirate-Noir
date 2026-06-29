@@ -60,17 +60,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWaves
   Player: {fileID: 0}
   Distance: 0
-  SpawnDistance: 150
+  SpawnDistance: 10
   SpawnDistanceSqr: 0
   roundNumber: 3
-  enemiesOnRound: 30
+  enemiesOnRound: 1
   ActiveEnemies: 0
-  enemiesPerWave: 10
+  enemiesPerWave: 5
   poolSize: 50
   regularEnemy: {fileID: 0}
   rangedEnemy: {fileID: 0}
   bigEnemy: {fileID: 0}
   enemyWaves: []
+  spawnLocationNumber: 0
+  spawn1: {fileID: 0}
+  spawn2: {fileID: 0}
+  spawnWait: 1.5
+  currentRound: 0
 --- !u!1 &4206499446311787551
 GameObject:
   m_ObjectHideFlags: 0

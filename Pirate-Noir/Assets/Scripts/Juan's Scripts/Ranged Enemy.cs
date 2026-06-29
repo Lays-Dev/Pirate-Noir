@@ -8,6 +8,7 @@ public class RangedEnemy : Enemy
     public List<GameObject> ProjectileList = new List<GameObject>();
     public GameObject Projectile; // object to pool, will be using the sword for now.
     public int poolSize = 10;
+    private int nextProjectileIndex = 0;
 
     private float timer; //will be used for the attack code
 
@@ -26,15 +27,35 @@ public class RangedEnemy : Enemy
         }
     }
     
+
+    public override void EnemyDied()
+    {
+        Debug.Log("Enemy died.");
+        
+        foreach (GameObject Projectile in ProjectileList)
+        {
+            if (Projectile != null)
+            {
+                Debug.Log("Disabling projectile");
+                Destroy(Projectile);
+            }
+        }
+
+        ProjectileList.Clear(); // make the pool separate later on
+        base.EnemyDied();
+    }
+    
     
     #region Attack Code
     public GameObject GetPooledProjectile()
     {
         for (int i = 0; i < ProjectileList.Count; i++)
         {
-            if (!ProjectileList[i].activeInHierarchy)
+            int index = (nextProjectileIndex + i) % ProjectileList.Count;
+            if (!ProjectileList[index].activeInHierarchy)
             {
-                return ProjectileList[i];
+                nextProjectileIndex = (index + 1) % ProjectileList.Count;
+                return ProjectileList[index];
             }
         }
         return null; // if no pooled object is available, return null, this will probably change in later versions
