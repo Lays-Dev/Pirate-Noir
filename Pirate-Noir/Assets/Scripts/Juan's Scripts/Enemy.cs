@@ -269,7 +269,7 @@ public class Enemy : MonoBehaviour
         // No behavior choice here, I want the player to either lose the enemy or have him get close and reaching attack phase.
     }
 
-    public void EnemyDied()
+    public virtual void EnemyDied()
     {
         enemyWaves.ActiveEnemies--;
         StopAllCoroutines();
